@@ -1,0 +1,5 @@
+---
+- name: update ca certificates
+  become: yes
+  shell: update-ca-certificates -f
+  

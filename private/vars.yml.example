@@ -1,0 +1,11 @@
+---
+yeller_api_key: yk_w_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+yeller_env: development
+admins: [{ name: test1, email: test1@example.com, contact: yes },
+         { name: test2, email: test2@example.com, contact: no },
+         { name: test3, email: test3@example.com, contact: yes },
+         { name: test4, email: test4@example.com, contact: yes }]
+email_aliases: [[ root, contact ],
+                [ postmaster, root ],
+                [ webmaster, contact ],
+                [ hostmaster, contact ]]
