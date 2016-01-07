@@ -1,0 +1,31 @@
+- cron: name="run indexer"
+        user="clojars" 
+        minute=5 
+        job="java -jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar --name clojars --index ~/indexer/index-{{ indexer_version }} --destination ~/repo/.index --repository ~/repo --checksums --quiet --type min -l --chunks --keep 50"
+  become: yes
+
+- cron: name="check disk space"
+        user="clojars" 
+        minute=45
+        job="~/bin/check-disk-space.sh"
+  become: yes
+
+- cron: name="update pom list"
+        user="clojars" 
+        minute=0
+        job="~/bin/update-pom-list"
+  become: yes
+
+- cron: name="update stats"
+        user="clojars"
+        minute=0
+        hour=7
+        job="~/bin/update-stats"
+  become: yes
+
+- cron: name="cleanup orphan temp files"
+        user="clojars"
+        minute=0
+        hour=1
+        job="find /tmp -name 'clojars-upload*' -mtime +3 -exec rm {} +"
+  become: yes

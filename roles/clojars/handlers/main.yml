@@ -1,0 +1,6 @@
+---
+- name: restart clojars
+  service: name=clojars state=restarted
+  
+- name: start nginx
+  service: name=nginx state=started

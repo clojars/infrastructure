@@ -1,0 +1,116 @@
+---
+# TODO: There has to be a better way to specify to run as clojars for this whole role
+# System
+- name: ensure clojars user exists
+  group: name=clojars state=present system=yes
+  become: yes
+
+- name: "ensure clojars user exists"
+  become: yes
+  become_user: root
+  user: name=clojars password=clojars
+
+- include: files.yml
+  become_user: clojars
+  become: yes
+
+# Install software
+- name: install unzip
+  apt: name=unzip state=present
+  become: yes
+
+- name: install cronolog
+  apt: name=cronolog state=present
+  become: yes
+
+- name: install sqlite
+  apt: name=sqlite3 state=present
+  become: yes
+
+# Install lxml, required for Maven ansible module
+- name: install lxml
+  apt: name=python-lxml state=present
+  become: yes
+
+# TODO: parameterise version here and in crontab
+# TODO: waiting on https://github.com/ansible/ansible-modules-extras/issues/1452
+- maven_artifact:
+    group_id=org.apache.maven.indexer
+    artifact_id="indexer-core"
+    version={{ indexer_version }}
+    classifier=cli
+    dest="/home/clojars/indexer/indexer-core-{{ indexer_version }}-cli.jar"
+  become: yes
+  become_user: clojars
+
+
+# Run DB migrations, where do we get clojars.sql from?
+
+
+# Build and run Clojars
+
+# - name: start clojars
+#   service: name=clojars state=started
+
+- name: build clojars
+  become: yes
+  become_user: clojars
+  script: build-clojars "{{clojars_version}}"
+  args:
+    creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
+
+# TODO: SSL folder
+
+ # script: ../files/build-clojars "{{clojars_version}}"
+ # - creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
+
+# Determine if a path exists and is a symlink. Note that if the path does
+# not exist, and we test sym.stat.islnk, it will fail with an error. So
+# therefore, we must test whether it is defined.
+# Run this to understand the structure, the skipped ones do not pass the
+# check performed by 'when'
+# - stat: path=/path/to/something
+#   register: sym
+# - debug: msg="islnk isn't defined (path doesn't exist)"
+#   when: sym.stat.islnk is not defined
+# - debug: msg="islnk is defined (path must exist)"
+#   when: sym.stat.islnk is defined
+# - debug: msg="Path exists and is a symlink"
+#   when: sym.stat.islnk is defined and sym.stat.islnk
+# - debug: msg="Path exists and isn't a symlink"
+#   when: sym.stat.islnk is defined and sym.stat.islnk == False
+
+- name: deploy clojars
+  script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}"
+  become: yes
+  become_user: clojars
+  args:
+    creates: ""
+ # notify: restart clojars
+
+- include: cron.yml
+- include: nginx.yml
+  become: yes
+
+
+
+# TODO:
+#- build new version (run tests too)
+#- deploy version
+#- run a smoke test against staging
+# run the backup instance as well
+# handle deleted JARs
+
+#
+# tasks:
+#
+#   - wait_for: host={{ inventory_hostname }} port=22
+#     delegate_to: localhost
+
+# tasks:
+#
+#   - action: uri url=http://www.example.com return_content=yes
+#     register: webpage
+#
+#   - fail: msg='service is not happy'
+#     when: "'AWESOME' not in webpage.content"

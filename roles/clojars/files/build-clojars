@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# if [ $(whoami) != clojars ]; then
+#   echo "Run this as the clojars user:"
+#   echo "   sudo -u clojars deploy-clojars 0.7.0"
+#   exit 1
+# fi
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 tag"
+  exit 1
+fi
+
+RELEASES=/home/clojars/releases
+BUILD=/home/clojars/tmp/build
+TAG=$1
+
+set -e -u -x
+
+# clean the build directory
+rm -rf "$BUILD"
+mkdir -p "$BUILD"
+cd "$BUILD"
+
+# checkout latest tag
+wget https://github.com/clojars/clojars-web/archive/"$TAG".zip --output-document clojars-archive.zip
+unzip clojars-archive.zip
+mv clojars-web-"$TAG" clojars-web
+rm clojars-archive.zip
+cd clojars-web
+
+# run unit tests
+mkdir -p data
+sqlite3 data/test_db < clojars.sql
+lein test
+
+# build standalone jar
+lein uberjar
+cp target/uberjar/clojars-web-"$TAG"-standalone.jar $RELEASES/

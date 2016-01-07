@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /repo
+
+User-agent: ia_archiver
+Disallow:
+
+#
+# Rather than scraping please use: https://github.com/ato/clojars-web/wiki/Data
+#

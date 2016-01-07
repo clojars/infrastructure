@@ -1,0 +1,23 @@
+---
+- name: install nginx
+  apt: pkg=nginx state=installed
+  notify:
+    - start nginx
+
+- name: ensure nginx conf exists
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: ensure nginx clojars conf exists
+  template: src=clojars.nginx.conf.j2 dest=/etc/nginx/sites-enabled/clojars
+
+- name: truncate default nginx conf
+  copy: dest=/etc/nginx/sites-enabled/default content='' force=yes
+
+- file: path={{ nginx_ssl_conf_dir }} state=directory mode=0700
+
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.crt" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.csr" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.key" dest={{ nginx_ssl_conf_dir }} mode=0640 # VERY IMPORTANT THIS IS ONLY READABLE BY ROOT!!!!
+- copy: src="{{ nginx_private_ssl_dir }}/dhparams-1024.pem" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/dhparams-2048.pem" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/sub.class1.server.ca.pem" dest={{ nginx_ssl_conf_dir }}
