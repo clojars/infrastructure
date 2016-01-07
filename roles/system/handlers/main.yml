@@ -1,0 +1,9 @@
+- name: update aliases database
+  command: newaliases
+  become: yes
+
+- name: reload postfix
+  service: name=postfix state=reloaded
+
+- name: restart rsync
+  service: name=rsync state=restarted

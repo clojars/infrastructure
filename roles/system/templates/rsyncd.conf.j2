@@ -1,0 +1,24 @@
+# {{ ansible_managed }}
+
+# GLOBAL OPTIONS
+
+#motd file=/etc/motd
+log file=/var/log/rsyncd
+# for pid file, do not use /var/run/rsync.pid if
+# you are going to run rsync out of the init.d script.
+pid file=/var/run/rsyncd.pid
+syslog facility=daemon
+#socket options=
+
+# MODULE OPTIONS
+[clojars]
+comment = Clojars repository
+path = /home/clojars/repo
+use chroot = yes
+lock file = /var/lock/rsyncd
+rad only = yes
+list = yes
+uid = nobody
+gid = nogroup
+dont compress = *.gz *.tgz *.zip *.z *.rpm *.deb *.iso *.bz2 *.tbz *.jar
+timeout = 600

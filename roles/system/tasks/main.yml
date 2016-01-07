@@ -1,0 +1,60 @@
+---
+
+# TODO: should we assume we are root always?
+
+- name: update apt caches
+  # sudo apt-get update
+  become: yes
+  apt: update_cache=yes
+
+# TODO: set hostname but don't use it for building clojars
+# - name: set hostname
+#   hostname: name={{ hostname }}
+
+# TODO: Set timezone
+# TODO: setup NTP
+
+# rsync config
+
+- name: install ntp
+  apt: name=ntp state=present
+
+- name: Ensure rsync conf file exists
+  template: src=rsyncd.conf.j2 dest=/etc/rsyncd.conf
+  notify: restart rsync
+
+- name: update rsync default conf
+  template: src=rsync-default.j2 dest=/etc/default/rsync
+  notify: restart rsync
+
+- name: ensure rsync is enabled
+  service: name=rsync enabled=yes
+
+# TODO: test this: rsync -av --delete clojars.org::clojars my-wonderful-copy-of-clojars
+
+- include: postfix.yml
+  notify: reload postfix
+
+- name: ensure admin user accounts exist
+  user: name="{{ item.name }}" state="{{ item.active | ternary('present', 'absent') }}"
+  with_items: admins
+  
+# TODO: remove user accounts when people are no longer active
+
+# TODO: this is pretty clever, maybe it's too clever for its own good?
+- name: add authorised keys from github user profile 
+  authorized_key: 
+    user: "{{ item.name }}" 
+    key: "https://github.com/{{ item.github_username | default(item.name) }}.keys"
+    exclusive: yes
+  when: "{{ item.active }}"
+  with_items: admins
+
+# TODO: set MOTD with instructions?
+
+# TODO: hardening, fail2ban, firewall, etc
+# http://practicalops.com/tag/ansible.html
+# http://lattejed.com/first-five-and-a-half-minutes-on-a-server-with-ansible
+# http://ryaneschinger.com/blog/securing-a-server-with-ansible/
+# https://github.com/vitalk/ansible-secure-ssh
+# http://debops.org
