@@ -7,7 +7,7 @@ cat all-poms.txt.new | gzip > all-poms.txt.gz.new
 python /home/clojars/bin/list_artifacts.py < all-poms.txt.new | uniq | tee all-jars.clj.new | gzip > all-jars.clj.gz.new
 
 mkdir -p ../tmp
-java -cp ../tmp/c2/src:../bin/clojars2-standalone.jar clojars.feed /home/clojars/repo ../tmp 2> /dev/null
+java -cp releases/clojars-web-current.jar clojure.main -m clojars.tools.generate-feed /home/clojars/repo ../tmp 2> /dev/null
 
 mv all-poms.txt.new all-poms.txt
 mv all-poms.txt.gz.new all-poms.txt.gz
