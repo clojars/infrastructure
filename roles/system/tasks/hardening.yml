@@ -6,3 +6,18 @@
 # https://github.com/vitalk/ansible-secure-ssh
 # http://debops.org
 # http://blog.mailgun.com/security-guide-basic-infrastructure-security/
+
+- name: update sshd config
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+  notify: restart sshd
+
+- name: install fail2ban
+  apt: pkg=fail2ban state=installed
+
+- name: install custom fail2ban config
+  template: src=jail.local.j2 dest=/etc/fail2ban/jail.local
+
+# iptables
+# ip6tables
+
+    

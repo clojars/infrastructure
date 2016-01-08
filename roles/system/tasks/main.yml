@@ -58,3 +58,5 @@
 #   when: "{{ item.active }}"
 #   with_items: admins
 
+- include: hardening.yml
+  become: yes
