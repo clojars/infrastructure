@@ -1,0 +1,8 @@
+
+# TODO: hardening, fail2ban, firewall, etc
+# http://practicalops.com/tag/ansible.html
+# http://lattejed.com/first-five-and-a-half-minutes-on-a-server-with-ansible
+# http://ryaneschinger.com/blog/securing-a-server-with-ansible/
+# https://github.com/vitalk/ansible-secure-ssh
+# http://debops.org
+# http://blog.mailgun.com/security-guide-basic-infrastructure-security/

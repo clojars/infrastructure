@@ -29,8 +29,6 @@ You should see
 
 There is some config for Clojars which is sensitive and cannot be publicly shared in the Github repo. This is placed in `private/vars.yml`. For development purposes, `private/vars.yml.example` is a vars file which looks like the real one but with sensitive information replaced. Run `cp private/vars.yml.example private/vars.yml` to create your private vars file.
 
-TODO: Create a script to generate/touch private files so developers have files to copy across in Ansible
-
 # Running playbooks
 
 Run:
@@ -58,18 +56,6 @@ To print manually installed packages:
 ```
 cat /var/log/apt/history.log ) | egrep '^(Start-Date:|Commandline:)' | grep -v aptdaemon | egrep -B1 '^Commandline:'
 ```
-
-# TODO:
-
-* Decouple dependency on Clojars with building Clojars (build an uberjar to store in S3/GitHub instead?)
-* Add a health check to Clojars for automated smoke testing
-* Don't call Yeller when doing a staging release
-* email setup (inc email SSL)
-* cron tasks
-* rsync setup
-* check all cron jobs run successfully
-* SSL
-
 
 # License
 

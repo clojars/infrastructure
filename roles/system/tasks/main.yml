@@ -1,6 +1,6 @@
 ---
 
-# TODO: should we assume we are root always?
+# general setup
 
 - name: update apt caches
   # sudo apt-get update
@@ -12,14 +12,14 @@
 #   hostname: name={{ hostname }}
 
 # TODO: Set timezone
-# TODO: setup NTP
-
-# rsync config
+# TODO: set MOTD with instructions?
 
 # TODO: /etc/ssh/sshd_config
 
 - name: install ntp
   apt: name=ntp state=present
+
+# rsync config
 
 - name: Ensure rsync conf file exists
   template: src=rsyncd.conf.j2 dest=/etc/rsyncd.conf
@@ -32,10 +32,10 @@
 - name: ensure rsync is enabled
   service: name=rsync enabled=yes
 
-# TODO: test this: rsync -av --delete clojars.org::clojars my-wonderful-copy-of-clojars
-
 - include: postfix.yml
   notify: reload postfix
+
+# user accounts
 
 - name: ensure admin user accounts exist
   user: name="{{ item.name }}" state=present
@@ -58,12 +58,3 @@
 #   when: "{{ item.active }}"
 #   with_items: admins
 
-# TODO: set MOTD with instructions?
-
-# TODO: hardening, fail2ban, firewall, etc
-# http://practicalops.com/tag/ansible.html
-# http://lattejed.com/first-five-and-a-half-minutes-on-a-server-with-ansible
-# http://ryaneschinger.com/blog/securing-a-server-with-ansible/
-# https://github.com/vitalk/ansible-secure-ssh
-# http://debops.org
-# http://blog.mailgun.com/security-guide-basic-infrastructure-security/
