@@ -16,6 +16,8 @@
 
 # rsync config
 
+# TODO: /etc/ssh/sshd_config
+
 - name: install ntp
   apt: name=ntp state=present
 
@@ -36,19 +38,25 @@
   notify: reload postfix
 
 - name: ensure admin user accounts exist
-  user: name="{{ item.name }}" state="{{ item.active | ternary('present', 'absent') }}"
-  with_items: admins
-  
-# TODO: remove user accounts when people are no longer active
-
-# TODO: this is pretty clever, maybe it's too clever for its own good?
-- name: add authorised keys from github user profile 
-  authorized_key: 
-    user: "{{ item.name }}" 
-    key: "https://github.com/{{ item.github_username | default(item.name) }}.keys"
-    exclusive: yes
+  user: name="{{ item.name }}" state=present
   when: "{{ item.active }}"
   with_items: admins
+
+# To remove accounts, set the admin's active key in private/vars.yml to no
+# Then rerun the playbook before removing them from the vars file
+- name: remove unneeded admin accounts
+  user: name="{{ item.name }}" state=absent remove=yes
+  when: "{{ not item.active }}"
+  with_items: admins
+
+# TODO: this is pretty clever, maybe it's too clever for its own good?
+# - name: add authorised keys from github user profile
+#   authorized_key:
+#     user: "{{ item.name }}"
+#     key: "https://github.com/{{ item.github_username | default(item.name) }}.keys"
+#     exclusive: yes
+#   when: "{{ item.active }}"
+#   with_items: admins
 
 # TODO: set MOTD with instructions?
 
@@ -58,3 +66,4 @@
 # http://ryaneschinger.com/blog/securing-a-server-with-ansible/
 # https://github.com/vitalk/ansible-secure-ssh
 # http://debops.org
+# http://blog.mailgun.com/security-guide-basic-infrastructure-security/

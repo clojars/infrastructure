@@ -8,7 +8,7 @@
 - name: "ensure clojars user exists"
   become: yes
   become_user: root
-  user: name=clojars password=clojars
+  user: name=clojars password=clojars #TODO: change password!
 
 - include: files.yml
   become_user: clojars
@@ -52,12 +52,12 @@
 # - name: start clojars
 #   service: name=clojars state=started
 
-- name: build clojars
-  become: yes
-  become_user: clojars
-  script: build-clojars "{{clojars_version}}"
-  args:
-    creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
+# - name: build clojars
+#   become: yes
+#   become_user: clojars
+#   script: build-clojars "{{clojars_version}}"
+#   args:
+#     creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
 
 # TODO: SSL folder
 
@@ -80,13 +80,13 @@
 # - debug: msg="Path exists and isn't a symlink"
 #   when: sym.stat.islnk is defined and sym.stat.islnk == False
 
-- name: deploy clojars
-  script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}"
-  become: yes
-  become_user: clojars
-  args:
-    creates: ""
- # notify: restart clojars
+# - name: deploy clojars
+#   script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}"
+#   become: yes
+#   become_user: clojars
+#   args:
+#     creates: ""
+#  # notify: restart clojars
 
 - include: cron.yml
 - include: nginx.yml
