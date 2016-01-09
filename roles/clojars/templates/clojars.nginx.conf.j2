@@ -73,6 +73,7 @@ server {
     alias /home/clojars/data/stats;
     autoindex on;
     expires 1d;
+    add_header Access-Control-Allow-Origin *;
   }
 
   location = /robots.txt { root /var/www/clojars; }
