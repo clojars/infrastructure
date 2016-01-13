@@ -9,7 +9,7 @@
 - name: update apt caches
   become: yes
   # Is the time apt was last updated < the current time - 24 hours?
-  when: "apt_update_details.stat.mtime < ansible_date_time.epoch|int  - (60 * 60 * 24)"
+  when: "apt_update_details.stat.mtim is defined and (apt_update_details.stat.mtime < ansible_date_time.epoch|int  - (60 * 60 * 24))"
   apt: update_cache=yes
 
 - name: Upgrade APT to the latest safe packages

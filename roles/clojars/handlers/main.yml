@@ -1,6 +1,10 @@
 ---
 - name: restart clojars
   service: name=clojars state=restarted
+  become: yes
+  become_user: root
   
 - name: start nginx
   service: name=nginx state=started
+  become: yes
+  become_user: root

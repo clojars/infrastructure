@@ -14,9 +14,10 @@
 - include: files.yml
   become_user: clojars
   become: yes
+  notify: restart clojars
 
 # Install software
-- name: install software
+- name: install software required for Clojars
   apt: name={{ item }} state=present
   become: yes
   with_items:
@@ -49,15 +50,11 @@
     creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
 
 - name: deploy clojars
-  script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}"
+  script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}" "{{yeller_env}}"
   become: yes
-  become_user: clojars
+  become_user: root
   args:
     creates: "" # TODO: check the symlink for idempotence
-  notify: restart clojars
-
-
-
 
 - name: start clojars
   service: name=clojars state=started

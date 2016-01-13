@@ -2,7 +2,10 @@
 - hosts: local
   roles:
 #     - { role: clojars, become_user: clojars } TODO: is this a better way to do it?
-    - { role: system, become: yes }
+    - { role: system, become: yes}
     - clojars
   vars_files:
     - private/vars.yml
+  force_handlers: yes
+
+# TODO: set yeller_env vars here and in production playbook

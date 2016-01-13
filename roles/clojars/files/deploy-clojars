@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-  echo "Usage: $0 tag"
-  echo "Or:    $0 tag yeller-api-key"
+  echo "Usage: $0 <tag>"
+  echo "Or:    $0 <tag> <yeller-api-key> <yeller-environment>"
   exit 1
 fi
 
@@ -11,8 +11,9 @@ set -e
 RELEASES=/home/clojars/releases # set this with ansible?
 TAG=$1
 YELLER_API_KEY=$2
+YELLER_ENVIRONMENT=$3
 
-if [ -z "$SUDO_USER" ]; then # TODO: check this
+if [ -z "$SUDO_USER" ]; then
 	DEPLOY_USER=$SUDO_USER
 else
 	DEPLOY_USER=$USER
@@ -21,7 +22,10 @@ fi
 ln -sf $RELEASES/clojars-web-"$TAG"-standalone.jar $RELEASES/clojars-web-current.jar
 
 # TODO: check if api key was passed and uncomment
-#curl -X POST "https://api.yellerapp.com/$YELLER_API_KEY/deploys?user=$DEPLOY_USER&revision=$TAG"
+
+if [ "$YELLER_ENVIRONMENT" = "production" ]; then
+  curl -X POST "https://api.yellerapp.com/$YELLER_API_KEY/deploys?user=$DEPLOY_USER&revision=$TAG"
+fi
 
 set +x
 # echo
@@ -33,3 +37,4 @@ set +x
 # echo "Once you're satisfied restart the production instance with: sudo restart clojars"
 
 # echo "Restart the production instance with: sudo restart clojars"
+sudo service clojars restart
