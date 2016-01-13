@@ -41,9 +41,6 @@
 
 # Build and run Clojars
 
-- name: start clojars
-  service: name=clojars state=started
-
 - name: build clojars
   become: yes
   become_user: clojars
@@ -58,6 +55,12 @@
   args:
     creates: "" # TODO: check the symlink for idempotence
   notify: restart clojars
+
+
+
+
+- name: start clojars
+  service: name=clojars state=started
 
 - include: cron.yml
 - include: nginx.yml

@@ -1,5 +1,7 @@
 # Clojars Server Config
 
+[![Build Status](https://travis-ci.org/clojars/clojars-server-config.svg)](https://travis-ci.org/clojars/clojars-server-config)
+
 This repo contains the Ansible config to build a Clojars server from scratch. It includes a Vagrantfile for running and testing locally.
 
 # Setting up
