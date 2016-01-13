@@ -9,7 +9,7 @@
 - name: "ensure clojars user exists"
   become: yes
   become_user: root
-  user: name=clojars password=clojars shell=/bin/false #TODO: change password! #TODO: check if we can turn off shell for this user
+  user: name=clojars shell=/bin/false #TODO: check if we can turn off shell for this user
 
 - include: files.yml
   become_user: clojars
@@ -24,19 +24,6 @@
     - cronolog
     - sqlite3
     - python-lxml
-
-# - name: install cronolog
-#   apt: name=cronolog state=present
-#   become: yes
-#
-# - name: install sqlite
-#   apt: name=sqlite3 state=present
-#   become: yes
-#
-# # Install lxml, required for Maven ansible module
-# - name: install lxml
-#   apt: name=python-lxml state=present
-#   become: yes
 
 # TODO: waiting on https://github.com/ansible/ansible-modules-extras/issues/1452 to use ~ instead of /home/clojars
 - maven_artifact:
