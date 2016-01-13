@@ -9,3 +9,5 @@ email_aliases: [[ root, contact ],
                 [ postmaster, root ],
                 [ webmaster, contact ],
                 [ hostmaster, contact ]]
+UBUNTU_COMMON_ROOT_PASSWORD: r123
+UBUNTU_COMMON_LOGWATCH_EMAIL: root

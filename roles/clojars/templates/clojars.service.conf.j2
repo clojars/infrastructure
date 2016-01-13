@@ -19,4 +19,3 @@ env YELLER_ENV={{ yeller_env }}
 
 chdir /home/clojars
 exec su clojars -c 'java -Dnla.node=clojars -Xmx512m -server "-XX:OnOutOfMemoryError=kill -9 %p" -cp data/etc:releases/clojars-web-current.jar clojars.main 2>&1 | /usr/bin/cronolog -S /logs/clojars.log /logs/%Y%m/clojars.%Y-%m-%d.log'
-# TODO: this should only bind to localhost?

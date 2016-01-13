@@ -5,7 +5,7 @@
 - name: ensure logs directory exists
   become: yes
   become_user: root
-  file: path=/logs state=directory mode=0755 owner=clojars
+  file: path=/logs state=directory mode=0755 owner=clojars group=clojars
 
 - name: ensure data directory exists
   file: path=~/data state=directory mode=0755

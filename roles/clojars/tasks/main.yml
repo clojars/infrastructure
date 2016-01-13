@@ -9,7 +9,7 @@
 - name: "ensure clojars user exists"
   become: yes
   become_user: root
-  user: name=clojars shell=/bin/false #TODO: check if we can turn off shell for this user
+  user: name=clojars shell=/bin/bash #TODO: check if we can turn off shell for this user
 
 - include: files.yml
   become_user: clojars
