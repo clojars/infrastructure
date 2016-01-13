@@ -11,13 +11,35 @@
   template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
   notify: restart sshd
 
-- name: install fail2ban
-  apt: pkg=fail2ban state=installed
-
 - name: install custom fail2ban config
   template: src=jail.local.j2 dest=/etc/fail2ban/jail.local
 
-# iptables
-# ip6tables
+- name: Adjust APT update intervals
+  template: src=apt_periodic.j2 dest=/etc/apt/apt.conf.d/10periodic
 
-    
+# Do this first to make sure we don't get locked out by the default deny
+- name: Allow ssh traffic but limit brute force attempts
+  ufw: rule=limit port={{ ubuntu_common_ssh_port }} proto=tcp
+
+- name: Setup ufw default deny
+  ufw: state=enabled policy=deny
+
+- name: Allow other traffic
+  ufw: rule=allow port={{ item }} proto=tcp
+  with_items:
+    - 25 # postfix
+    - 80 # http
+    - 443 # https
+    - 873 # rsync
+
+- name: Allow mosh traffic
+  ufw: rule=allow proto=udp port={{ ubuntu_common_mosh_from_port }}:{{ ubuntu_common_mosh_to_port }}
+  when: "'mosh' in ubuntu_common_optional_packages"
+
+- name: Email log summary daily # TODO: manage this with ansible cron instead
+  lineinfile: dest=/etc/cron.daily/00logwatch
+              regexp="^/usr/sbin/logwatch"
+              line="/usr/sbin/logwatch --output mail --mailto {{ UBUNTU_COMMON_LOGWATCH_EMAIL }} --detail high"
+              state=present create=yes  
+              
+# TODO: port these logs  /var/log/auth.log, /var/log/syslog, and /var/log/messages.

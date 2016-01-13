@@ -1,36 +1,42 @@
 ---
 # TODO: There has to be a better way to specify to run as clojars for this whole role
 # System
-- name: ensure clojars user exists
+- name: ensure clojars group exists
   group: name=clojars state=present system=yes
   become: yes
 
+# TODO: should we make sure that 
 - name: "ensure clojars user exists"
   become: yes
   become_user: root
-  user: name=clojars password=clojars #TODO: change password!
+  user: name=clojars password=clojars shell=/bin/false #TODO: change password! #TODO: check if we can turn off shell for this user
 
 - include: files.yml
   become_user: clojars
   become: yes
 
 # Install software
-- name: install unzip
-  apt: name=unzip state=present
+- name: install software
+  apt: name={{ item }} state=present
   become: yes
+  with_items:
+    - unzip
+    - cronolog
+    - sqlite3
+    - python-lxml
 
-- name: install cronolog
-  apt: name=cronolog state=present
-  become: yes
-
-- name: install sqlite
-  apt: name=sqlite3 state=present
-  become: yes
-
-# Install lxml, required for Maven ansible module
-- name: install lxml
-  apt: name=python-lxml state=present
-  become: yes
+# - name: install cronolog
+#   apt: name=cronolog state=present
+#   become: yes
+#
+# - name: install sqlite
+#   apt: name=sqlite3 state=present
+#   become: yes
+#
+# # Install lxml, required for Maven ansible module
+# - name: install lxml
+#   apt: name=python-lxml state=present
+#   become: yes
 
 # TODO: waiting on https://github.com/ansible/ansible-modules-extras/issues/1452 to use ~ instead of /home/clojars
 - maven_artifact:

@@ -2,61 +2,58 @@
 
 # general setup
 
+- name: check last time apt was updated
+  stat: path=/var/cache/apt/pkgcache.bin
+  register: apt_update_details
+
 - name: update apt caches
-  # sudo apt-get update
   become: yes
+  # Is the time apt was last updated < the current time - 24 hours?
+  when: "apt_update_details.stat.mtime < ansible_date_time.epoch|int  - (60 * 60 * 24)"
   apt: update_cache=yes
+
+- name: Upgrade APT to the lastest packages
+  apt: upgrade=safe
+
+- name: Install required packages
+  apt: state=installed name={{ item }}
+  with_items: ubuntu_common_required_packages
+
+- name: Install optional packages
+  apt: state=installed name={{ item }}
+  with_items: ubuntu_common_optional_packages
 
 # TODO: set hostname but don't use it for building clojars
 # - name: set hostname
 #   hostname: name={{ hostname }}
 
-# TODO: Set timezone
+- name: Set timezone to UTC
+  when: ansible_date_time.tz != 'UTC'
+  command: timedatectl set-timezone UTC
+
 # TODO: set MOTD with instructions?
-
-# TODO: /etc/ssh/sshd_config
-
-- name: install ntp
-  apt: name=ntp state=present
-
-# rsync config
-
-- name: Ensure rsync conf file exists
-  template: src=rsyncd.conf.j2 dest=/etc/rsyncd.conf
-  notify: restart rsync
-
-- name: update rsync default conf
-  template: src=rsync-default.j2 dest=/etc/default/rsync
-  notify: restart rsync
-
-- name: ensure rsync is enabled
-  service: name=rsync enabled=yes
-
-- include: postfix.yml
-  notify: reload postfix
 
 # user accounts
 
 - name: ensure admin user accounts exist
-  user: name="{{ item.name }}" state=present
+  user: name="{{ item.name }}" state=present shell="/bin/bash"
   when: "{{ item.active }}"
   with_items: admins
 
-# To remove accounts, set the admin's active key in private/vars.yml to no
-# Then rerun the playbook before removing them from the vars file
+# To remove accounts, set the admin's 'active' key in private/vars.yml to no,
+# then rerun the playbook before removing them from the vars file
 - name: remove unneeded admin accounts
   user: name="{{ item.name }}" state=absent remove=yes
   when: "{{ not item.active }}"
   with_items: admins
 
-# TODO: this is pretty clever, maybe it's too clever for its own good?
-# - name: add authorised keys from github user profile
-#   authorized_key:
-#     user: "{{ item.name }}"
-#     key: "https://github.com/{{ item.github_username | default(item.name) }}.keys"
-#     exclusive: yes
-#   when: "{{ item.active }}"
-#   with_items: admins
+# includes
+
+- include: rsync.yml
+  notify: restart rsync
+
+- include: postfix.yml
+  notify: reload postfix
 
 - include: hardening.yml
   become: yes
