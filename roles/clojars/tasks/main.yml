@@ -36,11 +36,13 @@
   become: yes
   become_user: clojars
 
-
-# Run DB migrations, where do we get clojars.sql from?
-
-
 # Build and run Clojars
+
+- name: TEMP copy clojars JAR
+  copy: src=clojars-web-{{clojars_version}}-standalone.jar dest="/home/clojars/releases"
+  become: yes
+  become_user: clojars
+
 
 - name: build clojars
   become: yes
@@ -56,9 +58,15 @@
   args:
     creates: "" # TODO: check the symlink for idempotence
 
+- name: migrate db
+  script: migrate-db
+  become: yes
+  become_user: clojars
+
 - name: start clojars
   service: name=clojars state=started
 
 - include: cron.yml
+
 - include: nginx.yml
   become: yes
