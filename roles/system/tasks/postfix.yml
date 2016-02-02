@@ -11,9 +11,9 @@
 - name: Set mailname
   template: src=mailname.j2 dest=/etc/mailname
 
-- copy: src=./private/postfix-ssl/smtpd.crt dest=/etc/ssl/certs
-- copy: src=./private/postfix-ssl/cacert.pem dest=/etc/ssl/certs
-- copy: src=./private/postfix-ssl/smtpd.key dest=/etc/ssl/private/smtpd.key mode=0600 # VERY IMPORTANT THIS IS ONLY ROOT READABLE
+- copyv: src=./private/postfix-ssl/smtpd.crt dest=/etc/ssl/certs
+- copyv: src=./private/postfix-ssl/cacert.pem dest=/etc/ssl/certs
+- copyv: src=./private/postfix-ssl/smtpd.key dest=/etc/ssl/private/smtpd.key mode=0600 # VERY IMPORTANT THIS IS ONLY ROOT READABLE
   become_user: root # Belt and suspenders at this point, as we're running the system role as root already.
 
 # TODO: make sure email is working. It doesn't seem to work locally

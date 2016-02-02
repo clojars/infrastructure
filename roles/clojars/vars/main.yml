@@ -1,4 +1,4 @@
-clojars_version: 28-SNAPSHOT
+clojars_version: 29
 indexer_version: 4.1.2
 nginx_ssl_conf_dir: /etc/nginx/ssl
 nginx_private_ssl_dir: ./private/nginx-ssl

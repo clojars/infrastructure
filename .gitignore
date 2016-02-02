@@ -2,3 +2,4 @@ private/*
 !private/var.yaml.example 
 !private/bootstrap.sh
 .vagrant
+*.pyc
