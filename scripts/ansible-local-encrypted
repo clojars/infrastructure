@@ -1,0 +1,7 @@
+#!/bin/sh
+
+ansible-playbook \
+  --inventory local --private-key=.vagrant/machines/default/virtualbox/private_key \
+  --user vagrant \
+  --vault-password-file ~/.vault_pass.txt \
+  site.yml "$@"
