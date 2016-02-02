@@ -23,9 +23,8 @@
   apt: state=installed name={{ item }}
   with_items: ubuntu_common_optional_packages
 
-# TODO: set hostname but don't use it for building clojars
-# - name: set hostname
-#   hostname: name={{ hostname }}
+- name: set hostname
+  hostname: name={{ hostname }}
 
 - name: Set timezone to UTC
   when: ansible_date_time.tz != 'UTC'
