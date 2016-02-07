@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /repo
+Disallow: /search
 
 User-agent: ia_archiver
 Disallow:
