@@ -40,6 +40,6 @@
   lineinfile: dest=/etc/cron.daily/00logwatch
               regexp="^/usr/sbin/logwatch"
               line="/usr/sbin/logwatch --output mail --mailto {{ UBUNTU_COMMON_LOGWATCH_EMAIL }} --detail high"
-              state=present create=yes  
-              
+              state=present create=yes
+
 # TODO: port these logs  /var/log/auth.log, /var/log/syslog, and /var/log/messages.

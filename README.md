@@ -12,6 +12,17 @@ Install Virtualbox, Vagrant 1.8, and Ansible 2.0.0. To install Ansible 2 on Home
 
 Run `vagrant up` to start up the VM. Before you go any further, run `vagrant snapshot save clean-build`. This will save a snapshot of our VM and allow us to reset our VM state quickly.
 
+Installing Java and updating the apt-cache is the slowest operation in the ansible playbook. You may want to run
+
+```
+ansible-playbook \
+   --inventory local --private-key=.vagrant/machines/default/virtualbox/private_key \
+   --user vagrant \
+   java.yml
+```
+
+before snapshotting to speed up rebuilds.
+
 To test everything is working, run:
 
 ```

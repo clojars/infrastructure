@@ -1,6 +1,6 @@
 ---
 - name: download leiningen
-  get_url: url=https://raw.github.com/technomancy/leiningen/{{leiningen_version}}/bin/lein 
+  get_url: url=https://raw.github.com/technomancy/leiningen/{{leiningen_version}}/bin/lein
            dest=/usr/local/bin/lein-{{leiningen_version}}
            mode=0755
   become: yes
@@ -12,3 +12,5 @@
   file: dest=/usr/local/bin/lein
         src=/usr/local/bin/lein-{{leiningen_version}}
         state=link
+
+# TODO: make sure lein is always up to date

@@ -5,7 +5,7 @@
   group: name=clojars state=present system=yes
   become: yes
 
-# TODO: should we make sure that 
+# TODO: should we make sure that
 - name: "ensure clojars user exists"
   become: yes
   become_user: root
