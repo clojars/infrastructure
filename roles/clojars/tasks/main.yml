@@ -64,7 +64,7 @@
   become_user: clojars
 
 - name: start clojars
-  service: name=clojars state=started
+  service: name=clojars state=started enabled=yes
 
 - include: cron.yml
 

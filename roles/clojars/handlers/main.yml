@@ -3,8 +3,8 @@
   service: name=clojars state=restarted
   become: yes
   become_user: root
-  
-- name: start nginx
-  service: name=nginx state=started
+
+- name: reload nginx
+  service: name=nginx state=reloaded
   become: yes
   become_user: root
