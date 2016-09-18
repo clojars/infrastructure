@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Run the java playbook separately as it takes a while, and you can
+# snapshot it once with `vagrant snapshot save java-installed`, and
+# then rerun playbooks from that point with
+# `vagrant snapshot restore java-installed`
+
+ansible-playbook \
+  --connection=ssh \
+  --inventory=local \
+  --private-key=.vagrant/machines/default/virtualbox/private_key \
+  --user vagrant \
+  java.yml "$@"
