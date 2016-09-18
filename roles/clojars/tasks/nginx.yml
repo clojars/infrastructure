@@ -25,10 +25,10 @@
 
 - file: path={{ nginx_ssl_conf_dir }} state=directory mode=0700
 
-# TODO: parameterise this copyv into one task with variables and a loop.
-- copyv: src="{{ nginx_private_ssl_dir }}/clojars.org.crt" dest={{ nginx_ssl_conf_dir }}
-- copyv: src="{{ nginx_private_ssl_dir }}/clojars.org.csr" dest={{ nginx_ssl_conf_dir }}
-- copyv: src="{{ nginx_private_ssl_dir }}/clojars.org.key" dest={{ nginx_ssl_conf_dir }} mode=0640 # VERY IMPORTANT THIS IS ONLY READABLE BY ROOT!!!!
-- copyv: src="{{ nginx_private_ssl_dir }}/dhparams-1024.pem" dest={{ nginx_ssl_conf_dir }}
-- copyv: src="{{ nginx_private_ssl_dir }}/dhparams-2048.pem" dest={{ nginx_ssl_conf_dir }}
-- copyv: src="{{ nginx_private_ssl_dir }}/sub.class1.server.ca.pem" dest={{ nginx_ssl_conf_dir }}
+# TODO: parameterise this copy into one task with variables and a loop.
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.crt" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.csr" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/clojars.org.key" dest={{ nginx_ssl_conf_dir }} mode=0640 # VERY IMPORTANT THIS IS ONLY READABLE BY ROOT!!!!
+- copy: src="{{ nginx_private_ssl_dir }}/dhparams-1024.pem" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/dhparams-2048.pem" dest={{ nginx_ssl_conf_dir }}
+- copy: src="{{ nginx_private_ssl_dir }}/sub.class1.server.ca.pem" dest={{ nginx_ssl_conf_dir }}
