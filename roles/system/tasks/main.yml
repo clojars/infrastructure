@@ -17,11 +17,11 @@
 
 - name: Install required packages
   apt: state=installed name={{ item }}
-  with_items: {{ ubuntu_common_required_packages }}
+  with_items: "{{ ubuntu_common_required_packages }}"
 
 - name: Install optional packages
   apt: state=installed name={{ item }}
-  with_items: {{ ubuntu_common_optional_packages }}
+  with_items: "{{ ubuntu_common_optional_packages }}"
 
 - name: set hostname
   hostname: name={{ hostname }}
@@ -37,14 +37,14 @@
 - name: ensure admin user accounts exist
   user: name="{{ item.name }}" state=present shell="/bin/bash"
   when: "{{ item.active }}"
-  with_items: admins
+  with_items: "{{ admins }}"
 
 # To remove accounts, set the admin's 'active' key in private/vars.yml to no,
 # then rerun the playbook before removing them from the vars file
 - name: remove unneeded admin accounts
   user: name="{{ item.name }}" state=absent remove=yes
   when: "{{ not item.active }}"
-  with_items: admins
+  with_items: "{{ admins }}"
 
 # includes
 
