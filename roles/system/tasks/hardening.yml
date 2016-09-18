@@ -27,10 +27,10 @@
 - name: Allow other traffic
   ufw: rule=allow port={{ item }} proto=tcp
   with_items:
-    - 25 # postfix
-    - 80 # http
-    - 443 # https
-    - 873 # rsync
+    - smtp
+    - http
+    - https
+    - rsync
 
 - name: Allow mosh traffic
   ufw: rule=allow proto=udp port={{ ubuntu_common_mosh_from_port }}:{{ ubuntu_common_mosh_to_port }}
