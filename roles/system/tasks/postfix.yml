@@ -1,8 +1,9 @@
 - name: ensure postfix is running
   service: name=postfix state=started enabled=yes
-  
+
 - name: Install postfix config
   template: src=main.cf.j2 dest=/etc/postfix/main.cf
+  notify: reload postfix
 
 - name: setup mail aliases # https://github.com/xcezx/ansible-aliases is another nice approach here
   template: src=aliases.j2 dest=/etc/aliases
@@ -10,6 +11,7 @@
 
 - name: Set mailname
   template: src=mailname.j2 dest=/etc/mailname
+  notify: reload postfix
 
 - copyv: src=./private/postfix-ssl/smtpd.crt dest=/etc/ssl/certs
 - copyv: src=./private/postfix-ssl/cacert.pem dest=/etc/ssl/certs
@@ -27,3 +29,4 @@
   with_items:
     - { question: 'postfix/mailname', value: '{{ ansible_fqdn }}', vtype: 'string' }
     - { question: 'postfix/main_mailer_type', value: 'Internet Site', vtype: 'string' }
+  notify: reload postfix

@@ -2,9 +2,11 @@
 
 - name: Ensure rsync conf file exists
   template: src=rsyncd.conf.j2 dest=/etc/rsyncd.conf
+  notify: reload rsync
 
 - name: update rsync default conf
   template: src=rsync-default.j2 dest=/etc/default/rsync
+  notify: reload rsync
 
 - name: ensure rsync is enabled
-  service: name=rsync enabled=yes
+  service: name=rsync enabled=yes state=started

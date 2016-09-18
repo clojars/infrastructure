@@ -49,10 +49,8 @@
 # includes
 
 - include: rsync.yml
-  notify: restart rsync
 
 - include: postfix.yml
-  notify: reload postfix
 
 - include: hardening.yml
   become: yes
