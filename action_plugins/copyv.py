@@ -1,5 +1,3 @@
-# Copied from https://github.com/saygoweb/ansible-plugin-copyv
-
 # (c) 2012-2014, Michael DeHaan <michael.dehaan@gmail.com>
 #
 # This file is part of Ansible
@@ -26,6 +24,7 @@ import os
 import tempfile
 
 from ansible import constants as C
+from ansible import errors
 from ansible.parsing.vault import VaultLib
 from ansible.plugins.action import ActionBase
 from ansible.utils.boolean import boolean
@@ -153,7 +152,7 @@ class ActionModule(ActionBase):
         vault = VaultLib(password=self._loader._vault_password)
         diffs = []
         for source_full, source_rel in source_files:
-            
+
             vault_temp_file = None
             data = None
 
@@ -168,12 +167,12 @@ class ActionModule(ActionBase):
                 # since the decrypt function doesn't know the file name
                 if self._loader._vault_password is None:
                     raise errors.AnsibleError("A vault password must be specified to decrypt %s" % source_full)
-                    
+
                 data = vault.decrypt(data)
                 # Make a temp file
                 vault_temp_file = self._create_content_tempfile(data)
                 source_full = vault_temp_file;
-                
+
             # Generate a hash of the local file.
             local_checksum = checksum(source_full)
 
@@ -279,7 +278,7 @@ class ActionModule(ActionBase):
                 if vault_temp_file:
                     os.remove(vault_temp_file);
                     vault_temp_file = None
-                    
+
                 if raw:
                     # Continue to next iteration if raw is defined.
                     self._remove_tmp_path(tmp)
