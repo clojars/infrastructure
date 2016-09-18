@@ -17,11 +17,11 @@
 
 - name: Install required packages
   apt: state=installed name={{ item }}
-  with_items: ubuntu_common_required_packages
+  with_items: {{ ubuntu_common_required_packages }}
 
 - name: Install optional packages
   apt: state=installed name={{ item }}
-  with_items: ubuntu_common_optional_packages
+  with_items: {{ ubuntu_common_optional_packages }}
 
 - name: set hostname
   hostname: name={{ hostname }}
