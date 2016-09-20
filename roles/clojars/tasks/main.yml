@@ -38,10 +38,10 @@
 
 # Build and run Clojars
 
-- name: TEMP copy clojars JAR
-  copy: src=clojars-web-{{clojars_version}}-standalone.jar dest="/home/clojars/releases"
-  become: yes
-  become_user: clojars
+# - name: TEMP copy clojars JAR
+#   copy: src=clojars-web-{{clojars_version}}-standalone.jar dest="/home/clojars/releases"
+#   become: yes
+#   become_user: clojars
 
 
 - name: build clojars
