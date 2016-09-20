@@ -5,13 +5,13 @@ upstream clojars-web {
 }
 
 server {
-  listen [::]:80;
+  listen [::]:80 ipv6only=off;
   server_name www.clojars.org www new.clojars.org;
   rewrite  ^ http://clojars.org$request_uri?  permanent;
 }
 
 server {
-  listen [::]:443;
+  listen [::]:443 ipv6only=off;
   ssl on;
   server_name www.clojars.org www new.clojars.org;
   rewrite  ^ http://clojars.org$request_uri?  permanent;
@@ -22,7 +22,7 @@ server {
 
 server {
   # listen 443 default;
-  listen [::]:443 ipv6only=off  default;
+  listen [::]:443 default;
   server_name clojars.org;
   access_log  /var/log/nginx/clojars.access.log;
   root /var/www/clojars;
@@ -32,8 +32,6 @@ server {
   ssl_certificate_key ssl/clojars.org.key;
 
   add_header Strict-Transport-Security "max-age=31536000";
-  add_header X-Xss-Protection "1; mode=block" always;
-  add_header X-Content-Type-Options "nosniff" always;
 
   proxy_set_header X-Forwarded-Proto $scheme;
 
@@ -54,6 +52,10 @@ server {
     proxy_pass http://clojars-web;
   }
 
+  location /images/clojars-logo-big.png {
+    return 301 https://clojars.org/images/clojars-logo@2x.png;
+  }
+
   location /repo {
     root /home/clojars;
     autoindex on;
@@ -64,7 +66,7 @@ server {
       # send uploads to webapp
       proxy_pass http://clojars-web;
     }
-    # set expiry to 1h after last-modified time for all-jars, all-poms and feed
+    # Set expiry to 1h after last-modified time for all-jars, all-poms and feed
     location ~ ^/repo/(all-jars\.clj(\.gz)?|all-poms\.txt(\.gz)?|feed\.clj\.gz)(\.md5|\.sha1)?$ {
       expires modified 1h5m;
     }
@@ -72,6 +74,7 @@ server {
 
   location @clojars_webapp {
     proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_pass http://clojars-web;
   }
 
@@ -88,7 +91,7 @@ server {
 
 server {
   #listen 80 default;
-  listen [::]:80 ipv6only=off  default;
+  listen [::]:80 default;
   server_name clojars.org;
   access_log  /var/log/nginx/clojars.access.log;
   root /var/www/clojars;
