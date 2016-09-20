@@ -16,6 +16,9 @@ env MAIL_URL=smtp://localhost:25?from=noreply@clojars.org
 env KEY_FILE=/home/clojars/data/authorized_keys
 env YELLER_TOKEN={{ yeller_api_key }}
 env YELLER_ENV={{ yeller_env }}
+env CLOUDFILES_USER={{ cloudfiles_user }}
+env CLOUDFILES_TOKEN={{ cloudfiles_token }}
+env CLOUDFILES_CONTAINER={{ cloudfiles_container }}
 
 chdir /home/clojars
 exec su clojars -c 'java -Dnla.node=clojars -Xmx512m -server "-XX:OnOutOfMemoryError=kill -9 %p" -cp data/etc:releases/clojars-web-current.jar clojars.main 2>&1 | /usr/bin/cronolog -S /logs/clojars.log /logs/%Y%m/clojars.%Y-%m-%d.log'
