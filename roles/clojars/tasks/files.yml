@@ -36,6 +36,8 @@
   become: yes
   become_user: root
 
+# TODO: use synchronize instead of copy, it's much faster, but permissions
+# are a bit trickier.
 - name: copy clojars website root
   copy: src=wwwroot dest=/var/www/clojars
   become: yes
