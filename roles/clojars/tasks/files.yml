@@ -10,6 +10,9 @@
 - name: ensure data directory exists
   file: path=~/data state=directory mode=0755
 
+- name: ensure data/index directory exists
+  file: path=~/data/index state=directory mode=0755
+
 - name: copy service template
   template: src=clojars.service.conf.j2 dest=/etc/init/clojars.conf mode=0644
   become: yes
