@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ansible-playbook \
+  --inventory=test \
+  --ask-become-pass \
+  --vault-password-file ~/.vault_pass.txt \
+  site.yml "$@"
+  # site.yml "$@"
