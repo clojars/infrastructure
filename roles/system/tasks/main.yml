@@ -11,6 +11,7 @@
   # Is the time apt was last updated < the current time - 24 hours?
   when: "apt_update_details.stat.mtime < ansible_date_time.epoch|int  - (60 * 60 * 24)"
   apt: update_cache=yes
+  # TODO: use cache_valid_time on installs instead?
 
 - name: Upgrade APT to the latest safe packages
   apt: upgrade=safe
