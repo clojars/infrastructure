@@ -98,7 +98,8 @@ server {
 
   location / {
     # force SSL on everything but the repo
-    rewrite ^ https://clojars.org$request_uri? permanent;
+    # TODO: remove beta once we are going to prod
+    rewrite ^ https://beta.clojars.org$request_uri? permanent;
   }
 
   location /repo {
