@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ansible-playbook \
-  --inventory=test \
+  --inventory=prod \
   --ask-become-pass \
   --vault-password-file ~/.vault_pass.txt \
   site.yml "$@"
