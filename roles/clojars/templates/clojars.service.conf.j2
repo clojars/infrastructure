@@ -6,14 +6,12 @@ start on filesystem
 stop on shutdown
 
 env PORT=8001
-env NAILGUN_PORT=7601
 env NREPL_PORT=7991
 
 env REPO=/home/clojars/repo
 env DELETION_BACKUP_DIR=/home/clojars/repo-deleted
 env DATABASE_URL=sqlite:///home/clojars/data/db
 env MAIL_URL=smtp://localhost:25?from=noreply@clojars.org
-env KEY_FILE=/home/clojars/data/authorized_keys
 env YELLER_TOKEN={{ yeller_api_key }}
 env YELLER_ENV={{ yeller_env }}
 env CLOUDFILES_USER={{ cloudfiles_user }}
