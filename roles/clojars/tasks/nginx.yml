@@ -5,7 +5,6 @@
 
 - name: install nginx
   apt: pkg=nginx state=installed
-
 - name: ensure nginx is enabled
   service: name=nginx state=started enabled=yes
   become: yes
