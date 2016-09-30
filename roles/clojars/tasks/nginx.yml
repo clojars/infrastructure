@@ -25,6 +25,12 @@
 
 - file: path={{ nginx_ssl_conf_dir }} state=directory mode=0700
 
+- name: ensure /var/log/nginx is world readable
+  file: path=/var/log/nginx mode=0755
+
+- name: ensure proper nginx lograte config exists
+  template: src=logrotate/nginx.j2 dest=/etc/logrotate.d
+  
 # TODO: parameterise this copy into one task with variables and a loop.
 # TODO: if these change we want to reload nginx config
 - copy: src="{{ nginx_private_ssl_dir }}/clojars.org.crt" dest={{ nginx_ssl_conf_dir }}
