@@ -1,6 +1,0 @@
-#!/bin/bash
-set -e
-DATE=$(date --date='1 day ago' +%Y%m%d)
-cat /var/log/nginx/clojars.access.log.1 | java -cp releases/clojars-web-current.jar clojure.main -m clojars.tools.process-stats > data/stats/downloads-$DATE.edn
-java -cp releases/clojars-web-current.jar clojure.main -m clojars.tools.merge-stats data/stats/all.edn data/stats/downloads-$DATE.edn > /tmp/all.edn
-mv /tmp/all.edn data/stats/all.edn

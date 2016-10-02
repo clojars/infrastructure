@@ -1,7 +1,7 @@
 - cron: name="run indexer"
         user="clojars" 
         minute=5 
-        job="java -jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar --name clojars --index ~/indexer/index-{{ indexer_version }} --destination ~/repo/.index --repository ~/repo --checksums --quiet --type min -l --chunks --keep 50"
+        job=". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
   become: yes
 
 - cron: name="check disk space"
@@ -13,14 +13,14 @@
 - cron: name="update pom list"
         user="clojars" 
         minute=0
-        job="~/bin/update-pom-list"
+        job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar ~/repo"
   become: yes
 
 - cron: name="update stats"
         user="clojars"
         minute=0
         hour=7
-        job="~/bin/update-stats"
+        job="~/bin/update-stats ~/releases/clojars-web-current.jar /var/log/nginx/clojars.access.log.1 ~/data/stat"
   become: yes
 
 - cron: name="cleanup orphan temp files"

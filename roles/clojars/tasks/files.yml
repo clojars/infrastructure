@@ -34,6 +34,9 @@
 - name: copy bin scripts
   copy: src=bin-scripts/ dest=~/bin
 
+- name: write environment file for script usage
+  template: src=config_env.j2 dest=~/bin mode=0644
+
 - name: create www directory
   file: path=/var/www state=directory mode=0755
   become: yes

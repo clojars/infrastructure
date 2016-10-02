@@ -39,3 +39,6 @@ sqlite3 data/test_db < resources/queries/clojars.sql
 # build standalone jar
 lein uberjar
 cp target/uberjar/clojars-web-"$TAG"-standalone.jar $RELEASES/
+
+# copy scripts to bin
+cp -f scripts/* /home/clojars/bin
