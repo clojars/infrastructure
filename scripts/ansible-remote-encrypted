@@ -2,7 +2,6 @@
 
 ansible-playbook \
   --inventory=prod \
-  --ask-become-pass \
   --vault-password-file ~/.vault_pass.txt \
   site.yml "$@"
   # site.yml "$@"
