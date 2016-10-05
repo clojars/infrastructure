@@ -36,10 +36,4 @@
   ufw: rule=allow proto=udp port={{ ubuntu_common_mosh_from_port }}:{{ ubuntu_common_mosh_to_port }}
   when: "'mosh' in ubuntu_common_optional_packages"
 
-- name: Email log summary daily # TODO: manage this with ansible cron instead
-  lineinfile: dest=/etc/cron.daily/00logwatch
-              regexp="^/usr/sbin/logwatch"
-              line="/usr/sbin/logwatch --output mail --mailto {{ UBUNTU_COMMON_LOGWATCH_EMAIL }} --detail high"
-              state=present create=yes
-
 # TODO: port these logs  /var/log/auth.log, /var/log/syslog, and /var/log/messages.
