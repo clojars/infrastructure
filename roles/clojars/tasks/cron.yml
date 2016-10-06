@@ -20,7 +20,7 @@
         user="clojars"
         minute=0
         hour=7
-        job="~/bin/update-stats ~/releases/clojars-web-current.jar /var/log/nginx/clojars.access.log.1 ~/data/stat"
+        job="~/bin/update-stats ~/releases/clojars-web-current.jar /var/log/nginx/clojars.access.log.1 ~/data/stats"
   become: yes
 
 - cron: name="cleanup orphan temp files"
