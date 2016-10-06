@@ -10,6 +10,8 @@ ubuntu_common_required_packages:
 ubuntu_common_optional_packages:
   - mosh
   - vim
+  - zile
+  - tree
 
 ubuntu_common_ssh_port: 22
 ubuntu_common_mosh_from_port: 60000
