@@ -85,6 +85,9 @@
     dest: /home/ansible/.ssh/authorized_keys
     validate: 'ssh-keygen -lf %s'
 
+- name: apply custom logwatch config
+  template: src=logwatch-http.conf.j2 dest=/etc/logwatch/conf/services/http.conf
+
 # includes
 
 - include: rsync.yml
