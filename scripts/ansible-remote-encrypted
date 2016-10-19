@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -e
+
+./private/pre-deploy-check
+
 ansible-playbook \
   --inventory=prod \
   --vault-password-file ~/.vault_pass.txt \
