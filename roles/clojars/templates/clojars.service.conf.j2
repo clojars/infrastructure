@@ -5,19 +5,5 @@ respawn
 start on filesystem
 stop on shutdown
 
-env PORT=8001
-env NREPL_PORT=7991
-
-env REPO=/home/clojars/repo
-env DELETION_BACKUP_DIR=/home/clojars/repo-deleted
-env DATABASE_URL=sqlite:///home/clojars/data/db
-env MAIL_URL=smtp://localhost:25?from=noreply@clojars.org
-env SENTRY_DSN={{ sentry_dsn }}
-env CLOUDFILES_USER={{ cloudfiles_user }}
-env CLOUDFILES_TOKEN={{ cloudfiles_token }}
-env CLOUDFILES_CONTAINER={{ cloudfiles_container }}
-env CDN_TOKEN={{ cdn_token }}
-env CDN_URL=https://repo.clojars.org
-
 chdir /home/clojars
-exec su clojars -c 'java -Dnla.node=clojars -Xmx512m -server "-XX:OnOutOfMemoryError=kill -9 %p" -cp data/etc:releases/clojars-web-current.jar clojars.main 2>&1 | /usr/bin/cronolog -S /logs/clojars.log /logs/%Y%m/clojars.%Y-%m-%d.log'
+exec su clojars -c 'java -Dnla.node=clojars -Xmx512m -server "-XX:OnOutOfMemoryError=kill -9 %p" -Dclojars.config.file=data/conf/production_config.edn -cp releases/clojars-web-current.jar clojars.main 2>&1 | /usr/bin/cronolog -S /logs/clojars.log /logs/%Y%m/clojars.%Y-%m-%d.log'

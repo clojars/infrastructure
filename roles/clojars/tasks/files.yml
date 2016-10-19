@@ -18,8 +18,11 @@
   become: yes
   become_user: root
 
-- name: copy clojars config
-  template: src=config.clj.j2 dest=~/data/etc
+- name: ensure data/conf directory exists
+  file: path=~/data/conf state=directory mode=0700
+
+- name: copy clojars production config
+  template: src=production_config.edn.j2 dest=~/data/conf/production_config.edn mode=0644
 
 - name: create indexer folder
   file: path=~/indexer state=directory mode=0755

@@ -1,0 +1,11 @@
+;; {{ ansible_managed }}
+{:cdn-token "{{ cdn_token }}"
+ :cloudfiles-container "{{ cloudfiles_container }}"
+ :cloudfiles-token "{{ cloudfiles_token }}"
+ :cloudfiles-user "{{ cloudfiles_user }}"
+ :deletion-backup-dir "/home/clojars/repo-deleted"
+ :port 8001
+ ;; TODO: move to the default config
+ :repo "repo"
+ :yeller-environment "{{ yeller_env }}"
+ :yeller-token "{{ yeller_api_key }}"}
