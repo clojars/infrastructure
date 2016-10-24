@@ -1,6 +1,5 @@
 ---
-yeller_api_key: yk_w_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-yeller_env: development
+sentry_token: 5ccf4c1826a248d9b2734c0ffc2296346e9caa2b62c0dc128750fe232da5023c
 admins: [{ name: test1, email: test1@example.com, contact: yes, active: yes },
          { name: test2, email: test2@example.com, contact: no, active: yes },
          { name: test3, email: test3@example.com, contact: yes, active: no },

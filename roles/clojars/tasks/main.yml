@@ -52,7 +52,7 @@
     creates: "/home/clojars/releases/clojars-web-{{clojars_version}}-standalone.jar"
 
 - name: deploy clojars
-  script: deploy-clojars "{{clojars_version}}" "{{yeller_api_key}}" "{{yeller_env}}"
+  script: deploy-clojars "{{clojars_version}}" "{{sentry_token}}"
   become: yes
   become_user: root
   args:

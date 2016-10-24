@@ -8,4 +8,4 @@
     - private/vars.yml
   force_handlers: yes
 
-# TODO: set yeller_env vars here and in production playbook
+# TODO: set sentry_token vars here and in production playbook
