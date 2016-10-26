@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]; then
   echo "Usage: $0 <tag>"
-  echo "Or:    $0 <tag> <yeller-api-key> <yeller-environment>"
+  echo "Or:    $0 <tag> <sentry-token>"
   exit 1
 fi
 
@@ -10,8 +10,7 @@ set -e
 
 RELEASES=/home/clojars/releases # set this with ansible?
 TAG=$1
-YELLER_API_KEY=$2
-YELLER_ENVIRONMENT=$3
+SENTRY_TOKEN=$2
 
 if [ -z "$SUDO_USER" ]; then
 	DEPLOY_USER=$SUDO_USER
@@ -23,9 +22,7 @@ ln -sf $RELEASES/clojars-web-"$TAG"-standalone.jar $RELEASES/clojars-web-current
 
 # TODO: check if api key was passed and uncomment
 
-if [ "$YELLER_ENVIRONMENT" = "production" ]; then
-  curl -X POST "https://api.yellerapp.com/$YELLER_API_KEY/deploys?user=$DEPLOY_USER&revision=$TAG"
-fi
+curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${TAG}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com//api/0/projects/clojars/clojars-web/releases/"
 
 set +x
 # echo
