@@ -1,5 +1,7 @@
 # {{ ansible_managed }}
 
+limit_req_zone $binary_remote_addr zone=login:10m rate=1r/s;
+
 upstream clojars-web {
   server localhost:8001 max_fails=3;
 }
@@ -70,6 +72,14 @@ server {
     location ~ ^/repo/(all-jars\.clj(\.gz)?|all-poms\.txt(\.gz)?|feed\.clj\.gz)(\.md5|\.sha1)?$ {
       expires modified 1h5m;
     }
+  }
+
+  location /login {
+    limit_req zone=login burst=5;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://clojars-web;
   }
 
   location @clojars_webapp {
