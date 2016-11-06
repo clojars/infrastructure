@@ -22,7 +22,7 @@ ln -sf $RELEASES/clojars-web-"$TAG"-standalone.jar $RELEASES/clojars-web-current
 
 # TODO: check if api key was passed and uncomment
 
-curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${TAG}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com//api/0/projects/clojars/clojars-web/releases/"
+curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${TAG}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
 
 set +x
 # echo
