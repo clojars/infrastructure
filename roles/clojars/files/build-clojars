@@ -42,4 +42,4 @@ cp target/uberjar/clojars-web-"$TAG"-standalone.jar $RELEASES/
 
 # copy scripts to bin
 cp -f scripts/* /home/clojars/bin
-chmod 0755 /home/clojars/bin/*
+chmod +x /home/clojars/bin/*
