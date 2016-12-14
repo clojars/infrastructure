@@ -2,6 +2,9 @@
   command: newaliases
   become: yes
 
+- name: reload opendkim
+  service: name=opendkim state=reloaded
+
 - name: reload postfix
   service: name=postfix state=reloaded
 

@@ -6,6 +6,8 @@ ubuntu_common_required_packages:
   - ntp
   - postfix
   - mailutils
+  - opendkim
+  - opendkim-tools
 
 ubuntu_common_optional_packages:
   - mosh

@@ -1,3 +1,23 @@
+- file: path=/etc/mail state=directory mode=0700 owner=opendkim group=opendkim
+  become: yes
+  become_user: root
+  
+- copy: src="{{ dkim_private_cert_dir }}/dkim.key" dest=/etc/mail mode=0640 owner=opendkim # VERY IMPORTANT THIS IS ONLY READABLE BY opendkim
+
+- name: Set up dkim conf
+  template: src=opendkim.conf.j2 dest=/etc/opendkim.conf
+  notify: reload opendkim
+
+- name: Set up dkim defaults
+  template: src=opendkim-default.j2 dest=/etc/default/opendkim
+  notify: reload opendkim
+
+- name: ensure dkim is running
+  service: name=opendkim state=started enabled=yes
+
+- name: ensure postfix user can read dkim socket
+  user: name=postfix groups=opendkim
+    
 - name: ensure postfix is running
   service: name=postfix state=started enabled=yes
 
@@ -20,7 +40,7 @@
 
 # TODO: make sure email is working. It doesn't seem to work locally
 # helpful? https://github.com/phred/5minbootstrap/blob/master/bootstrap.yml#L51
-
+  
 - name: Set up Postfix to relay mail
   debconf: name=postfix
            question='{{ item.question }}'

@@ -55,3 +55,9 @@ smtpd_tls_loglevel = 1
 smtpd_tls_received_header = yes
 smtpd_tls_session_cache_timeout = 3600s
 tls_random_source = dev:/dev/urandom
+
+# DKIM settings
+milter_default_action = accept
+milter_protocol = 2
+smtpd_milters = inet:localhost:9999
+non_smtpd_milters = inet:localhost:9999
