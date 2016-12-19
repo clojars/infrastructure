@@ -72,4 +72,4 @@ cat /var/log/apt/history.log ) | egrep '^(Start-Date:|Commandline:)' | grep -v a
 
 # License
 
-Distributed under the Eclipse Public License. See the file COPYING.
+Distributed under the MIT License. See the file COPYING.
