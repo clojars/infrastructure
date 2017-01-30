@@ -3,3 +3,4 @@ private/*
 !private/bootstrap.sh
 .vagrant
 *.pyc
+site.retry
