@@ -32,6 +32,7 @@
     artifact_id="indexer-core"
     version={{ indexer_version }}
     classifier=cli
+    repository_url="http://repo1.maven.org/maven2"
     dest="/home/clojars/indexer/indexer-core-{{ indexer_version }}-cli.jar"
   become: yes
   become_user: clojars
