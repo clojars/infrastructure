@@ -41,4 +41,5 @@
         hour=5
         minute=0
         job="/usr/sbin/logwatch --output mail --mailto {{ UBUNTU_COMMON_LOGWATCH_EMAIL }} --detail high"
+        state="absent"
   become: yes
