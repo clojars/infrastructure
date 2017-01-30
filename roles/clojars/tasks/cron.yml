@@ -1,17 +1,17 @@
 - cron: name="run indexer"
-        user="clojars" 
-        minute=5 
+        user="clojars"
+        minute=5
         job=". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
   become: yes
 
 - cron: name="check disk space"
-        user="clojars" 
+        user="clojars"
         minute=45
         job="~/bin/check-disk-space.sh"
   become: yes
 
 - cron: name="update pom list"
-        user="clojars" 
+        user="clojars"
         minute=0
         job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar ~/repo"
   become: yes
