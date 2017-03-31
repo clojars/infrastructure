@@ -34,7 +34,7 @@
         user="clojars"
         minute=0
         hour=1
-        job="find /tmp -name 'clojars-upload*' -mtime +3 -exec rm {} +"
+        job="find /tmp -name 'upload-*' -type d -mtime +3 -exec rm -rf {} +"
   become: yes
 
 - cron: name="send out logwatch emails"
