@@ -34,8 +34,8 @@
   file: path=~/indexer state=directory mode=0755
 - file: path=~/indexer/index-{{ indexer_version }} state=directory mode=0755
 
-- name: create main repo folder
-  file: path=~/repo state=directory mode=0755
+- name: create main repo link
+  file: path=~/repo src=/mnt/repovolume/clojars-repo state=link mode=0755
 
 - name: create bin directory
   file: path=~/bin state=directory mode=0755
