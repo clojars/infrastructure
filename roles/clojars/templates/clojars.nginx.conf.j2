@@ -58,6 +58,10 @@ server {
     return 301 https://clojars.org/images/clojars-logo@2x.png;
   }
 
+  location /repo/quantum/datomic-pro {
+    return 451;
+  }
+
   location /repo {
     root /home/clojars;
     autoindex on;
