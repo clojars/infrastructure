@@ -7,12 +7,14 @@ upstream clojars-web {
 }
 
 server {
+  # Redirect http://www.clojars.org to http://clojars.org
   listen [::]:80 ipv6only=off;
   server_name www.clojars.org www new.clojars.org;
   rewrite  ^ http://clojars.org$request_uri?  permanent;
 }
 
 server {
+  # Redirect https://www.clojars.org to http://clojars.org
   listen [::]:443 ipv6only=off;
   ssl on;
   server_name www.clojars.org www new.clojars.org;
