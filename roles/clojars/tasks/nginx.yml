@@ -4,7 +4,8 @@
   apt_repository: repo='ppa:nginx/stable' update_cache=yes
 
 - name: install nginx
-  apt: pkg=nginx state=installed
+  apt: pkg=nginx state=present
+
 - name: ensure nginx is enabled
   service: name=nginx state=started enabled=yes
   become: yes
@@ -30,7 +31,7 @@
 
 - name: ensure proper nginx lograte config exists
   template: src=logrotate-nginx.j2 dest=/etc/logrotate.d/nginx
-  
+
 # TODO: parameterise this copy into one task with variables and a loop.
 # TODO: if these change we want to reload nginx config
 - copy: src="{{ nginx_private_ssl_dir }}/clojars.org.crt" dest={{ nginx_ssl_conf_dir }}
