@@ -22,13 +22,10 @@
 - name: Upgrade APT to the latest safe packages
   apt: upgrade=safe
 
-- name: Install required packages
-  apt: state=installed name={{ item }}
-  with_items: "{{ ubuntu_common_required_packages }}"
-
-- name: Install optional packages
-  apt: state=installed name={{ item }}
-  with_items: "{{ ubuntu_common_optional_packages }}"
+- name: Install required and optional packages
+  apt:
+    state: present
+    name: "{{ ubuntu_common_required_packages + ubuntu_common_optional_packages }}"
 
 - name: set hostname
   hostname: name={{ hostname }}
