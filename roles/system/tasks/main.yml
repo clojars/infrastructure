@@ -2,6 +2,12 @@
 
 # general setup
 
+- name: Verify Ansible meets Clojars version requirements.
+  assert:
+    that: "ansible_version.full is version_compare('2.5.4', '>=')"
+    msg: >
+      "You must update Ansible to at least 2.5.4 to deploy Clojars."
+
 - name: check last time apt was updated
   stat: path=/var/lib/apt/periodic/update-success-stamp
   register: apt_update_details
