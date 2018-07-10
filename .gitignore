@@ -4,3 +4,4 @@ private/*
 .vagrant
 *.pyc
 site.retry
+.idea/
