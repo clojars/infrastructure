@@ -78,6 +78,10 @@ server {
     location ~ ^/repo/(all-jars\.clj(\.gz)?|all-poms\.txt(\.gz)?|feed\.clj\.gz)(\.md5|\.sha1)?$ {
       expires modified 1h5m;
     }
+
+    location /repo/opencv-native {
+       client_max_body_size 100m;
+    }
   }
 
   location /login {
