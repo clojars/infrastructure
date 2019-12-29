@@ -1,0 +1,33 @@
+#!/bin/bash
+# Backs up the clojars postgres db to cloudfiles. Must be run as the
+# postgres user.
+#
+# Takes an option to choose between an hourly backup or a daily
+# backup.
+#
+# Hourly backups (specified by --hourly, or the absence of any
+# options) backs up the db with a name that contains the hour of the
+# day. This gives us a full day of hourly backups at any time.
+#
+# Daily backups (specified by --daily) backs up the db with name that
+# contains the day of the month in the name. This gives us a full
+# month of daily backups at any time.
+#
+# Backup files are gzipped and stored in the backup container
+# specified by DB_BACKUP_CONTAINER.
+
+set -euo pipefail
+
+if [ "$1" == "--daily" ]; then
+  fname="/tmp/clojars-db-daily-$(date +'%d').sql"
+else
+  fname="/tmp/clojars-db-hourly-$(date +'%H').sql"
+fi
+
+pg_dump --dbname=clojars --file="$fname" --format=plain
+
+gzip --force --best "$fname"
+
+java -cp /home/clojars/releases/clojars-web-current.jar clojure.main \
+     -m clojars.tools.upload-files \
+     "$DB_BACKUP_CONTAINER" "$CLOUDFILES_USER" "$CLOUDFILES_TOKEN" "${fname}.gz"

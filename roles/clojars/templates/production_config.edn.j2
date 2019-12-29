@@ -4,6 +4,7 @@
  :cloudfiles-token "{{ cloudfiles_token }}"
  :cloudfiles-user "{{ cloudfiles_user }}"
  :deletion-backup-dir "/home/clojars/repo-deleted"
- :port 8001
+ :port 8001 ;; remove when clojars-web postgres branch merged
+ ;; :db {:password "{{ postgres_password }}"} ;; uncomment when clojars-web postgres branch merged
  :repo "repo"
  :sentry-dsn "{{ sentry_dsn }}"}
