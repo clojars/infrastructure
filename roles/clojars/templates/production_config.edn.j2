@@ -4,6 +4,6 @@
  :cloudfiles-token "{{ cloudfiles_token }}"
  :cloudfiles-user "{{ cloudfiles_user }}"
  :deletion-backup-dir "/home/clojars/repo-deleted"
- :port 8001
+ :db {:password "{{ postgres_password }}"}
  :repo "repo"
  :sentry-dsn "{{ sentry_dsn }}"}

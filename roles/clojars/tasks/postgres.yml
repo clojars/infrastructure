@@ -1,0 +1,27 @@
+---
+- name: install psycopg2 (needed by postgres ansible tasks)
+  apt: pkg=python-psycopg2 state=present
+  become: yes
+  
+- name: install postgres
+  apt: pkg=postgresql state=present
+  become: yes
+
+- name: ensure postgres is enabled
+  service: name=postgresql state=started enabled=yes
+  become: yes
+
+- name: create clojars database
+  postgresql_db:
+    name: clojars
+  become: yes
+  become_user: postgres
+  
+- name: create clojars database user
+  postgresql_user:
+    name: clojars
+    password: "{{ postgres_password }}"
+    db: clojars
+    priv: ALL
+  become: yes
+  become_user: postgres
