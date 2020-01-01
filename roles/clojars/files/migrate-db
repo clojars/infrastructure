@@ -2,6 +2,4 @@
 
 cd /home/clojars
 
-export CLOJARS_ENVIRONMENT=production
-
-java -Dclojars.config.file=/home/clojars/data/conf/production_config.edn -cp data/etc:/home/clojars/releases/clojars-web-current.jar clojars.tools.migrate_db
+java -cp data/etc:/home/clojars/releases/clojars-web-current.jar clojars.tools.migrate_db
