@@ -113,28 +113,5 @@ server {
   #listen 80 default;
   listen [::]:80 default;
   server_name clojars.org;
-  access_log  /var/log/nginx/clojars.access.log;
-  root /var/www/clojars;
-
-  location / {
-    # force SSL on everything but the repo
-    rewrite ^ https://clojars.org$request_uri? permanent;
-  }
-
-  location /repo {
-    root /home/clojars;
-    autoindex on;
-    expires 1w;
-    log_not_found off;
-    error_page 405 /sslonly.txt;
-  }
-
-  location /stats {
-    alias /home/clojars/data/stats;
-    autoindex on;
-    expires 1d;
-  }
-
-  location = /sslonly.txt {}
-  location = /robots.txt { root /var/www/clojars; }
+  return 301 https://clojars.org$request_uri;
 }
