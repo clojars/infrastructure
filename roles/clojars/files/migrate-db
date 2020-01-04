@@ -2,4 +2,6 @@
 
 cd /home/clojars
 
-java -cp data/etc:/home/clojars/releases/clojars-web-current.jar clojars.tools.migrate_db
+. ./bin/config_env
+
+java -cp /home/clojars/releases/clojars-web-current.jar clojars.tools.migrate_db
