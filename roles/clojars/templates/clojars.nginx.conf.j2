@@ -75,12 +75,17 @@ server {
       proxy_pass http://clojars-web;
     }
     # Set expiry to 1h after last-modified time for all-jars, all-poms and feed
-    location ~ ^/repo/(all-jars\.clj(\.gz)?|all-poms\.txt(\.gz)?|feed\.clj\.gz)(\.md5|\.sha1)?$ {
-      expires modified 1h5m;
-    }
+    #location ~ ^/repo/(all-jars\.clj(\.gz)?|all-poms\.txt(\.gz)?|feed\.clj\.gz)(\.md5|\.sha1)?$ {
+    #  expires modified 1h5m;
+    #}
 
     location /repo/opencv-native {
        client_max_body_size 100m;
+    }
+
+    if ($request_method ~ "GET|HEAD") {
+      rewrite ^/repo$ https://repo.clojars.org redirect;
+      rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
     }
   }
 
