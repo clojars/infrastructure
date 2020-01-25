@@ -6,4 +6,8 @@
  :deletion-backup-dir "/home/clojars/repo-deleted"
  :db {:password "{{ postgres_password }}"}
  :repo "repo"
+ :s3 {:access-key-id "{{ aws_access_key_id }}"
+      :secret-access-key "{{ aws_secret_access_key }}"
+      :region "us-east-2"
+      :stats-bucket "clojars-stats-production"}
  :sentry-dsn "{{ sentry_dsn }}"}
