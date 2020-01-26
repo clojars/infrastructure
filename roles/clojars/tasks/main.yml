@@ -25,6 +25,12 @@
     - cronolog
     - sqlite3
     - python-lxml
+    - python-pip
+
+# Install aws-cli
+- name: install awscli
+  command: /usr/bin/pip install awscli
+  become_user: root
 
 # TODO: waiting on https://github.com/ansible/ansible-modules-extras/issues/1452 to use ~ instead of /home/clojars
 - maven_artifact:

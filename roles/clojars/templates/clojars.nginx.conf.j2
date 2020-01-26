@@ -104,10 +104,8 @@ server {
   }
 
   location /stats {
-    alias /home/clojars/data/stats;
-    autoindex on;
-    expires 1d;
-    add_header Access-Control-Allow-Origin *;
+    rewrite ^/stats$ https://repo.clojars.org/stats redirect;
+    rewrite ^/stats/(.*)$ https://repo.clojars.org/stats/$1 redirect;
   }
 
   location = /robots.txt { root /var/www/clojars; }
