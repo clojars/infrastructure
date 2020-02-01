@@ -104,7 +104,7 @@ server {
   }
 
   location /stats {
-    rewrite ^/stats$ https://repo.clojars.org/stats redirect;
+    rewrite ^/stats$ https://repo.clojars.org/stats/ redirect;
     rewrite ^/stats/(.*)$ https://repo.clojars.org/stats/$1 redirect;
   }
 
