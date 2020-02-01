@@ -16,6 +16,13 @@
         job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar ~/repo"
   become: yes
 
+- name: Email cron results for debugging
+  cronvar:
+    name: MAILTO
+    value: contact@clojars.org
+    user: clojars
+  become: true
+  
 - cron: name="combine cdn logs and update stats"
         user="clojars"
         minute=15
