@@ -107,3 +107,15 @@ resource "aws_iam_user_policy_attachment" "fastly_logging_policy_attach" {
   user = aws_iam_user.fastly_logs.name
   policy_arn = aws_iam_policy.fastly_logs_policy.arn
 }
+
+# repo buckets
+
+resource "aws_s3_bucket" "dev_repo_bucket" {
+  bucket = "clojars-repo-development"
+  acl = "public-read"
+}
+
+resource "aws_s3_bucket" "production_repo_bucket" {
+  bucket = "clojars-repo-production"
+  acl = "public-read"
+}
