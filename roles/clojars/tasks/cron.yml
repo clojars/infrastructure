@@ -19,7 +19,14 @@
 - name: Email cron results for debugging
   cronvar:
     name: MAILTO
-    value: contact@clojars.org
+    value: toby@tcrawley.org
+    user: clojars
+  become: true
+
+- name: Set path for cron scripts
+  cronvar:
+    name: PATH
+    value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     user: clojars
   become: true
   
