@@ -13,7 +13,7 @@
 - cron: name="update pom list"
         user="clojars"
         minute=0
-        job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar ~/repo"
+        job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar"
   become: yes
 
 - name: Email cron results for debugging
