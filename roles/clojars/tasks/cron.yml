@@ -4,6 +4,13 @@
         job=". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
   become: yes
 
+- cron: name="rebuild search index"
+        user="clojars"
+        minute=20
+        hour="*/4"
+        job=". ~/bin/config_env; java -cp ~/releases/clojars-web-current.jar clojure.main -m clojars.tools.build-search-index"
+  become: yes
+
 - cron: name="check disk space"
         user="clojars"
         minute=45
