@@ -2,13 +2,6 @@ provider "aws" {
   region = "us-east-2"
 }
 
-# stats bucket
-
-resource "aws_s3_bucket" "stats_bucket" {
-  bucket = "clojars-stats-production"
-  acl = "public-read"
-}
-
 # user for rackspace server
 
 resource "aws_iam_user" "rackspace_server" {
@@ -113,9 +106,34 @@ resource "aws_iam_user_policy_attachment" "fastly_logging_policy_attach" {
 resource "aws_s3_bucket" "dev_repo_bucket" {
   bucket = "clojars-repo-development"
   acl = "public-read"
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
 }
 
 resource "aws_s3_bucket" "production_repo_bucket" {
   bucket = "clojars-repo-production"
   acl = "public-read"
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
+}
+
+# stats bucket
+
+resource "aws_s3_bucket" "stats_bucket" {
+  bucket = "clojars-stats-production"
+  acl = "public-read"
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
 }
