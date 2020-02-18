@@ -137,3 +137,47 @@ resource "aws_s3_bucket" "stats_bucket" {
     allowed_origins = ["*"]
   }
 }
+
+# RDS
+
+variable "db_password" {
+  type = string
+}
+
+variable "db_username" {
+  type = string
+}
+
+resource "aws_security_group" "allow_postgres" {
+  name        = "allow_postgres"
+  description = "Allow access tp postgres server" # typo, but can't be changed w/o recreating RDS resource!
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["23.253.149.7/32"] # clojars.org on rackspace
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_db_instance" "default" {
+  allocated_storage = 20
+  backup_retention_period = 7
+  engine = "postgres"
+  engine_version = "11.6"
+  identifier = "clojars-production"
+  instance_class = "db.t3.micro"
+  name = "clojars"
+  password = var.db_password
+  publicly_accessible = true
+  storage_type = "gp2"
+  username = var.db_username
+  vpc_security_group_ids = [aws_security_group.allow_postgres.id]
+}
