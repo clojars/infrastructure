@@ -62,10 +62,12 @@
         user="postgres"
         minute=10
         job=". /home/clojars/bin/config_env; /home/clojars/bin/backup-db --hourly"
+        state="absent"
   become: yes
   
 - cron: name="backup db every day"
         user="postgres"
         hour=0
         job=". /home/clojars/bin/config_env; /home/clojars/bin/backup-db --daily"
+        state="absent"
   become: yes

@@ -50,8 +50,6 @@
 #   become: yes
 #   become_user: clojars
 
-- include: postgres.yml
-
 - name: build clojars
   become: yes
   become_user: clojars
