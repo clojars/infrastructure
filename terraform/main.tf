@@ -156,7 +156,11 @@ resource "aws_security_group" "allow_postgres" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["23.253.149.7/32"] # clojars.org on rackspace
+    cidr_blocks = [
+      "23.253.149.7/32", # clojars.org on rackspace
+      "172.31.17.27/32", # server.clojars.org on ec2, private IP. Need to use the value from beta.tf!
+      "24.178.169.9/32"
+    ] 
   }
 
   egress {
@@ -180,4 +184,11 @@ resource "aws_db_instance" "default" {
   storage_type = "gp2"
   username = var.db_username
   vpc_security_group_ids = [aws_security_group.allow_postgres.id]
+}
+
+# bucket for storing artifact index
+
+resource "aws_s3_bucket" "artifact_index_bucket" {
+  bucket = "clojars-artifact-index"
+  acl = "private"
 }

@@ -8,7 +8,7 @@
         user="clojars"
         minute=20
         hour="*/4"
-        job=". ~/bin/config_env; java -cp ~/releases/clojars-web-current.jar clojure.main -m clojars.tools.build-search-index"
+        job=". ~/bin/config_env; ~/bin/build-search-index ~/releases/clojars-web-current.jar"
   become: yes
 
 - cron: name="check disk space"

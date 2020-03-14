@@ -1,6 +1,0 @@
-#!/bin/sh
-# The lucene index is updated incrementally during deploys
-# but can be rebuilt from scratch with this script. Takes
-# ~15-20 mins.
-
-java -cp ../releases/clojars-web-current.jar clojars.tools.build_search_index
