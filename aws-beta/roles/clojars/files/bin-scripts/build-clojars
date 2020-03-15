@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 tag"
+  exit 1
+fi
+
+RELEASES=/home/clojars/releases
+BUILD=/home/clojars/tmp/build
+TAG=$1
+
+set -e -u -x
+
+# clean the build directory
+rm -rf "$BUILD"
+mkdir -p "$BUILD"
+cd "$BUILD"
+
+# checkout latest tag
+wget https://github.com/clojars/clojars-web/archive/"$TAG".zip --output-document clojars-archive.zip
+unzip clojars-archive.zip
+mv clojars-web-"$TAG" clojars-web
+rm clojars-archive.zip
+cd clojars-web
+
+# build standalone jar
+lein uberjar
+cp target/uberjar/clojars-web-"$TAG"-standalone.jar $RELEASES/
+
+# copy scripts to bin
+cp -f scripts/* /home/clojars/bin
+chmod +x /home/clojars/bin/*

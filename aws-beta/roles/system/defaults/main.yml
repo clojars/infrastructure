@@ -1,0 +1,12 @@
+al2_packages:
+  - cronolog
+  - htop
+  - mosh
+  - nginx
+  - ntp
+  - postgresql
+  - tmux
+  - tree
+  - vim
+  - zile
+  

@@ -1,0 +1,38 @@
+---
+
+# general setup
+
+- name: Verify Ansible meets Clojars version requirements.
+  assert:
+    that: "ansible_version.full is version_compare('2.9.4', '>=')"
+    msg: >
+      "You must update Ansible to at least 2.9.4 to deploy Clojars."
+
+- name: Install EPEL for additional packages
+  # sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  become: yes
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+      
+- name: update yum caches
+  become: yes
+  yum:
+    update_cache: yes
+  
+- name: Upgrade yum to the latest packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: Install  packages
+  yum:
+    name: al2_packages
+    state: latest
+
+- name: set hostname
+  hostname: name={{ hostname }}
+
+- name: Set timezone to UTC
+  when: ansible_date_time.tz != 'UTC'
+  command: timedatectl set-timezone UTC

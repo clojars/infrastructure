@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+Cmnd_Alias SYSCTL_CMD = /usr/bin/systemctl restart clojars
+
+clojars ALL=(ALL) NOPASSWD: SYSCTL_CMD
+

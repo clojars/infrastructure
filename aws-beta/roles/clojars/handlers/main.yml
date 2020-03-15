@@ -1,0 +1,14 @@
+---
+- name: restart clojars
+  service:
+    name: clojars
+    state: xrestarted
+  become: yes
+  become_user: root
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
+  become: yes
+  become_user: root

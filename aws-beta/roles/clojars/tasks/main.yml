@@ -1,0 +1,39 @@
+---
+# TODO: There has to be a better way to specify to run as clojars for this whole role
+# System
+- name: ensure clojars group exists
+  become: yes
+  group:
+    name: clojars
+    state: present
+    system: yes
+  
+- name: "ensure clojars user exists"
+  become: yes
+  become_user: root
+  user:
+    name: clojars
+    shell: /bin/bash 
+
+- include: files.yml
+  become_user: clojars
+  become: yes
+  notify: restart clojars
+
+- name: Install maven indexer jar
+  become: yes
+  become_user: clojars
+  maven_artifact:
+    group_id: org.apache.maven.indexer
+    artifact_id: "indexer-core"
+    version: "{{ indexer_version }}"
+    classifier: cli
+    repository_url: "https://repo1.maven.org/maven2"
+    dest: "~/indexer/indexer-core-{{ indexer_version }}-cli.jar"
+
+- include: nginx.yml
+  become: yes
+
+- include: cron.yml
+
+

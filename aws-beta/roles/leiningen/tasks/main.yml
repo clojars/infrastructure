@@ -1,0 +1,16 @@
+---
+- name: download leiningen
+  get_url:
+    url: https://raw.github.com/technomancy/leiningen/{{leiningen_version}}/bin/lein
+    dest: /usr/bin/lein-{{leiningen_version}}
+    mode: 0755
+  become: yes
+  notify:
+    - download leiningen uberjar
+
+- name: "symlink lein-{{ leiningen_version }} to lein"
+  become: yes
+  file:
+    dest: /usr/bin/lein
+    src: /usr/bin/lein-{{leiningen_version}}
+    state: link

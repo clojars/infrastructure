@@ -1,0 +1,109 @@
+# Directories and files
+- name: Ensure release directory exists
+  file:
+    path: ~/releases
+    state: directory
+    mode: 0755
+
+- name: Ensure logs directory exists
+  become: yes
+  become_user: root
+  file:
+    path: /logs
+    state: directory
+    mode: 0755
+    owner: clojars
+    group: clojars
+
+- name: Ensure data directory exists
+  file:
+    path: ~/data
+    state: directory
+    mode: 0755
+
+- name: Ensure data/index directory exists
+  file:
+    path: ~/data/index
+    state: directory
+    mode: 0755
+
+- name: Ensure data/stats directory exists
+  file:
+    path: ~/data/stats
+    state: directory
+    mode: 0755
+
+- name: Ensure data/tmp directory exists
+  file:
+    path: ~/data/tmp
+    state: directory
+    mode: 0755
+
+- name: Ensure data/conf directory exists
+  file:
+    path: ~/data/conf
+    state: directory
+    mode: 0700
+
+- name: Copy service template
+  become: yes
+  become_user: root
+  template:
+    src: clojars.service.j2
+    dest: /etc/systemd/system/clojars.service
+    mode: 0644
+
+- name: Copy clojars user sudoers
+  become: yes
+  become_user: root
+  template:
+    src: clojars_sudoers.j2
+    dest: /etc/sudoers.d/clojars_sudoers
+    mode: 0644
+    
+- name: Copy clojars production config
+  template:
+    src: production_config.edn.j2
+    dest: ~/data/conf/production_config.edn
+    mode: 0644
+
+- name: Create indexer folder
+  file:
+    path: ~/indexer
+    state: directory
+    mode: 0755
+    
+- name: Create indexer version folder    
+  file:
+    path: "~/indexer/index-{{ indexer_version }}"
+    state: directory
+    mode: 0755
+
+- name: create bin directory
+  file: path=~/bin state=directory mode=0755
+
+- name: copy bin scripts
+  copy: src=bin-scripts/ dest=~/bin mode=0755
+
+- name: write environment file for script usage
+  template:
+    src: config_env.j2
+    dest: ~/bin/config_env mode=0644
+
+- name: Create www directory
+  become: yes
+  become_user: root
+  file:
+    path: /var/www
+    state: directory
+    mode: 0755
+
+# TODO: use synchronize instead of copy, it's much faster, but permissions
+# are a bit trickier.
+- name: Copy clojars website root
+  become: yes
+  become_user: root
+  copy:
+    src: wwwroot/
+    dest: /var/www/clojars
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <tag>"
+  exit 1
+fi
+
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+. $DIR/config_env
+
+RELEASES=/home/clojars/releases # set this with ansible?
+TAG=$1
+
+$DIR/build-clojars $TAG
+
+ln -sf $RELEASES/clojars-web-"$TAG"-standalone.jar $RELEASES/clojars-web-current.jar
+
+curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${TAG}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
+
+set +x
+
+# the clojars user only has sudo rights to run this single command
+# see /etc/sudoers.d/clojars_sudoers
+sudo systemctl restart clojars
+
+$DIR/migrate-db
