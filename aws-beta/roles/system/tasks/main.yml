@@ -27,11 +27,12 @@
 
 - name: Install  packages
   yum:
-    name: al2_packages
+    name: "{{ al2_packages }}"
     state: latest
 
 - name: set hostname
-  hostname: name={{ hostname }}
+  hostname:
+    name: "{{ hostname }}"
 
 - name: Set timezone to UTC
   when: ansible_date_time.tz != 'UTC'
