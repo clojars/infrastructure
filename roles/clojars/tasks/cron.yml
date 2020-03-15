@@ -2,11 +2,12 @@
         user="clojars"
         minute=5
         job=". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
+        state="absent"
   become: yes
 
 - cron: name="rebuild search index"
         user="clojars"
-        minute=20
+        minute=50
         hour="*/4"
         job=". ~/bin/config_env; ~/bin/build-search-index ~/releases/clojars-web-current.jar"
   become: yes
@@ -21,6 +22,7 @@
         user="clojars"
         minute=0
         job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar"
+        state="absent"
   become: yes
 
 - name: Email cron results for debugging
@@ -42,6 +44,7 @@
         minute=15
         hour=1
         job=". ~/bin/config_env; ~/bin/update-stats ~/releases/clojars-web-current.jar"
+        state="absent"
   become: yes
 
 - cron: name="cleanup orphan temp files"

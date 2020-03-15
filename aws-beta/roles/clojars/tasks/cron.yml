@@ -1,34 +1,8 @@
-# - cron: name="run indexer"
-#         user="clojars"
-#         minute=5
-#         job=". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
-#   become: yes
-
-- name: "Rebuild search index"
-  become: true
-  cron:
-    user: "clojars"
-    minute: "40"
-    hour: "*/4"
-    job: ". ~/bin/config_env; ~/bin/build-search-index ~/releases/clojars-web-current.jar"
-  
-# - cron: name="check disk space"
-#         user="clojars"
-#         minute=45
-#         job="~/bin/check-disk-space.sh"
-#   become: yes
-
-# - cron: name="update pom list"
-#         user="clojars"
-#         minute=0
-#         job=". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar"
-#   become: yes
-
 - name: Email cron results for debugging
   become: true
   cronvar:
     name: MAILTO
-    value: tcrawley@gmail.com
+    value: toby@tcrawley.org
     user: clojars
 
 - name: Set path for cron scripts
@@ -37,18 +11,47 @@
     name: PATH
     value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     user: clojars
-  
-  
-# - cron: name="combine cdn logs and update stats"
-#         user="clojars"
-#         minute=15
-#         hour=1
-#         job=". ~/bin/config_env; ~/bin/update-stats ~/releases/clojars-web-current.jar"
-#   become: yes
 
-- name: "Cleanup orphan temp files"
+- name: Set maven indexer cron job
   become: true
   cron:
+    name: "run maven indexer"
+    user: "clojars"
+    minute: "5"
+    hour: "*/4"
+    job: ". ~/bin/config_env; ~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
+
+
+- name: Set rebuild search index cron job
+  become: true
+  cron:
+    name: "Rebuild search index"
+    user: "clojars"
+    minute: "40"
+    hour: "*/4"
+    job: ". ~/bin/config_env; ~/bin/build-search-index ~/releases/clojars-web-current.jar"
+  
+- name: Set update pom list cron job
+  become: true
+  cron:
+    name: "update pom list"
+    user: "clojars"
+    minute: "0"
+    job: ". ~/bin/config_env; ~/bin/update-pom-list ~/releases/clojars-web-current.jar"
+
+- name: Set stat generation cron job
+  become: yes
+  cron:
+    name: "combine cdn logs and update stats"
+    user: "clojars"
+    minute: "15"
+    hour: "1"
+    job: ". ~/bin/config_env; ~/bin/update-stats ~/releases/clojars-web-current.jar"
+
+- name: Set tmp file cleanup cron job
+  become: true
+  cron:
+    name: "Cleanup orphan temp files"
     user: "clojars"
     minute: "0"
     hour: "1"
