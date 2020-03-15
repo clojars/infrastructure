@@ -158,7 +158,7 @@ resource "aws_security_group" "allow_postgres" {
     protocol    = "tcp"
     cidr_blocks = [
       "23.253.149.7/32", # clojars.org on rackspace
-      "172.31.17.27/32", # server.clojars.org on ec2, private IP. Need to use the value from beta.tf!
+      "172.31.41.209/32", # server.clojars.org on ec2, private IP. Need to use the value from beta.tf!
       "24.178.169.9/32"
     ] 
   }
