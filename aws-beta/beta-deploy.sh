@@ -18,4 +18,4 @@ ssh "$host" sudo -u clojars /home/clojars/bin/ensure-index
 echo "Building and deploying Clojars $version..."
 ssh "$host" sudo -u clojars /home/clojars/bin/deploy-clojars "$version"
 
-
+sudo servicectl nginx restart
