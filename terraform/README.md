@@ -10,11 +10,10 @@ and `AWS_SECRET_ACCESS_KEY`.
 
 TODO: set up remote state
 
-### Applying a configuration
+### Applying the configuration
 
 ```
 # as an example
-cd s3/
 terraform apply
 ```
 
