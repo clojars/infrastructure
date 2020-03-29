@@ -40,6 +40,41 @@ resource "aws_dynamodb_table" "tf_state_lock" {
    }
 }
 
+# user for server acccess to s3
+
+resource "aws_iam_user" "server_user" {
+  name = "server-user"
+}
+
+resource "aws_iam_policy" "server_user_policy" {
+  name        = "server-user-policy"
+  description = "A policy for access from the EC2 server"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:DeleteObject",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user_policy_attachment" "server_user_policy_attach" {
+  user = aws_iam_user.server_user.name
+  policy_arn = aws_iam_policy.server_user_policy.arn
+}
+
 # fastly logs bucket
 
 resource "aws_s3_bucket" "fastly_logs_bucket" {
