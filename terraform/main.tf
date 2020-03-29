@@ -2,8 +2,42 @@ provider "aws" {
   region = "us-east-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "clojars-tf-state"
+    region = "us-east-2"
+    key = "clojars-prod/terraform.tfstate"
+    dynamodb_table = "terraform-state-lock"
+    encrypt = true
+  }
+}
+
 locals {
   instance_count = 1
+}
+
+
+# backend state setup
+
+resource "aws_s3_bucket" "tf_state" {
+  bucket = "clojars-tf-state"
+  acl = "private"
+
+  versioning {
+    enabled = true
+  }
+}
+
+resource "aws_dynamodb_table" "tf_state_lock" {
+   name = "terraform-state-lock"
+   hash_key = "LockID"
+   read_capacity = 2
+   write_capacity = 2
+
+   attribute {
+      name = "LockID"
+      type = "S"
+   }
 }
 
 # fastly logs bucket
