@@ -1,24 +1,30 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  echo "Usage: $0 <tag>"
-  exit 1
-fi
-
 set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-. $DIR/config_env
+. "$dir/config_env"
 
-RELEASES=/home/clojars/releases # set this with ansible?
-TAG=$1
+bucket="s3://clojars-deployment-artifacts"
+releases=/home/clojars/releases
+work_dir=/tmp/deploy
+rm -rf $work_dir
+mkdir -p $work_dir
+cd $work_dir
 
-$DIR/build-clojars $TAG
+aws s3 cp "${bucket}/current-release.txt" .
+version=$(cat "${work_dir}/current-release.txt")
 
-ln -sf $RELEASES/clojars-web-"$TAG"-standalone.jar $RELEASES/clojars-web-current.jar
+aws s3 cp "${bucket}/clojars-${version}.zip" .
+unzip -q "clojars-${version}.zip"
+mv "clojars-web-${version}-standalone.jar" $releases
+cp -f scripts/* /home/clojars/bin
+chmod +x /home/clojars/bin/*
 
-curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${TAG}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
+ln -sf "${releases}/clojars-web-${version}-standalone.jar" "${releases}/clojars-web-current.jar"
+
+curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${version}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
 
 set +x
 
@@ -26,4 +32,5 @@ set +x
 # see /etc/sudoers.d/clojars_sudoers
 sudo systemctl restart clojars
 
-$DIR/migrate-db
+"$dir/ensure-index"
+"$dir/migrate-db"

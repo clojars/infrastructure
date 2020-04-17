@@ -12,10 +12,9 @@ if [ -z "$host" ] || [ -z "$version" ]; then
   usage
 fi
 
-echo "Ensuring artifact index exists..."
-ssh "$host" sudo -u clojars /home/clojars/bin/ensure-index
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-echo "Building and deploying Clojars $version..."
-ssh "$host" sudo -u clojars /home/clojars/bin/deploy-clojars "$version"
+"$dir/upload-release.sh" $version
 
-sudo servicectl nginx restart
+ssh "$host" sudo -u clojars /home/clojars/bin/deploy-clojars 
+
