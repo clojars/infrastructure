@@ -407,3 +407,10 @@ resource "aws_lb_listener" "production_redir_to_ssl" {
     }
   }
 }
+
+# s3 bucket for deployments
+
+resource "aws_s3_bucket" "deployments_bucket" {
+  bucket = "clojars-deployment-artifacts"
+  acl = "private"
+}
