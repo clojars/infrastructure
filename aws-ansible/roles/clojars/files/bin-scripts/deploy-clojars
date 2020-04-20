@@ -6,6 +6,8 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 . "$dir/config_env"
 
+arg=${1:-restart}
+
 bucket="s3://clojars-deployment-artifacts"
 releases=/home/clojars/releases
 work_dir=/tmp/deploy
@@ -28,9 +30,11 @@ curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/js
 
 set +x
 
-# the clojars user only has sudo rights to run this single command
-# see /etc/sudoers.d/clojars_sudoers
-sudo systemctl restart clojars
+if [ "$arg" != "--disable-restart" ]; then
+  # the clojars user only has sudo rights to run this single command
+  # see /etc/sudoers.d/clojars_sudoers
+  sudo systemctl restart clojars
+fi
 
 "$dir/ensure-index"
 "$dir/migrate-db"

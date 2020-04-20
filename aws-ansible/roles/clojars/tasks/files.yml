@@ -45,7 +45,15 @@
     state: directory
     mode: 0700
 
-- name: Copy service template
+- name: Copy Deploy-on-boot service template
+  become: yes
+  become_user: root
+  template:
+    src: clojars_deploy.service.j2
+    dest: /etc/systemd/system/clojars_deploy.service
+    mode: 0644
+
+- name: Copy Clojars service template
   become: yes
   become_user: root
   template:

@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 [Unit]
 Description=Clojars webapp (production)
-After=network.target
+After=clojars_deploy.service
 
 [Service]
 User=clojars
