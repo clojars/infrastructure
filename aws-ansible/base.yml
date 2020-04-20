@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ host }}" 
+- hosts: "{{ host | default('127.0.0.1') }}" 
   remote_user: ec2-user
   become: true
   become_user: root
