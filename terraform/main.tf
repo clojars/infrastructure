@@ -4,11 +4,11 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "clojars-tf-state"
-    region = "us-east-2"
-    key = "clojars-prod/terraform.tfstate"
+    bucket         = "clojars-tf-state"
+    region         = "us-east-2"
+    key            = "clojars-prod/terraform.tfstate"
     dynamodb_table = "terraform-state-lock"
-    encrypt = true
+    encrypt        = true
   }
 }
 
@@ -21,7 +21,7 @@ locals {
 
 resource "aws_s3_bucket" "tf_state" {
   bucket = "clojars-tf-state"
-  acl = "private"
+  acl    = "private"
 
   versioning {
     enabled = true
@@ -29,15 +29,15 @@ resource "aws_s3_bucket" "tf_state" {
 }
 
 resource "aws_dynamodb_table" "tf_state_lock" {
-   name = "terraform-state-lock"
-   hash_key = "LockID"
-   read_capacity = 2
-   write_capacity = 2
+  name           = "terraform-state-lock"
+  hash_key       = "LockID"
+  read_capacity  = 2
+  write_capacity = 2
 
-   attribute {
-      name = "LockID"
-      type = "S"
-   }
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
 }
 
 # user for server acccess to s3
@@ -71,7 +71,7 @@ EOF
 }
 
 resource "aws_iam_user_policy_attachment" "server_user_policy_attach" {
-  user = aws_iam_user.server_user.name
+  user       = aws_iam_user.server_user.name
   policy_arn = aws_iam_policy.server_user_policy.arn
 }
 
@@ -79,7 +79,7 @@ resource "aws_iam_user_policy_attachment" "server_user_policy_attach" {
 
 resource "aws_s3_bucket" "fastly_logs_bucket" {
   bucket = "clojars-fastly-logs"
-  acl = "private"
+  acl    = "private"
 
   lifecycle_rule {
     id      = "delete-old-logs"
@@ -135,7 +135,7 @@ EOF
 }
 
 resource "aws_iam_user_policy_attachment" "fastly_logging_policy_attach" {
-  user = aws_iam_user.fastly_logs.name
+  user       = aws_iam_user.fastly_logs.name
   policy_arn = aws_iam_policy.fastly_logs_policy.arn
 }
 
@@ -143,7 +143,7 @@ resource "aws_iam_user_policy_attachment" "fastly_logging_policy_attach" {
 
 resource "aws_s3_bucket" "dev_repo_bucket" {
   bucket = "clojars-repo-development"
-  acl = "public-read"
+  acl    = "public-read"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -154,7 +154,7 @@ resource "aws_s3_bucket" "dev_repo_bucket" {
 
 resource "aws_s3_bucket" "production_repo_bucket" {
   bucket = "clojars-repo-production"
-  acl = "public-read"
+  acl    = "public-read"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -167,7 +167,7 @@ resource "aws_s3_bucket" "production_repo_bucket" {
 
 resource "aws_s3_bucket" "stats_bucket" {
   bucket = "clojars-stats-production"
-  acl = "public-read"
+  acl    = "public-read"
 
   cors_rule {
     allowed_headers = ["*"]
@@ -206,25 +206,25 @@ resource "aws_security_group" "allow_postgres" {
 }
 
 resource "aws_db_instance" "default" {
-  allocated_storage = 20
+  allocated_storage       = 20
   backup_retention_period = 7
-  engine = "postgres"
-  engine_version = "11.6"
-  identifier = "clojars-production"
-  instance_class = "db.t3.micro"
-  name = "clojars"
-  password = var.db_password
-  publicly_accessible = true
-  storage_type = "gp2"
-  username = var.db_username
-  vpc_security_group_ids = [aws_security_group.allow_postgres.id]
+  engine                  = "postgres"
+  engine_version          = "11.6"
+  identifier              = "clojars-production"
+  instance_class          = "db.t3.micro"
+  name                    = "clojars"
+  password                = var.db_password
+  publicly_accessible     = true
+  storage_type            = "gp2"
+  username                = var.db_username
+  vpc_security_group_ids  = [aws_security_group.allow_postgres.id]
 }
 
 # bucket for storing artifact index
 
 resource "aws_s3_bucket" "artifact_index_bucket" {
   bucket = "clojars-artifact-index"
-  acl = "private"
+  acl    = "private"
 }
 
 resource "aws_security_group" "server_production" {
@@ -249,19 +249,19 @@ resource "aws_security_group" "server_production" {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
-    
+
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 }
 
 resource "aws_instance" "production_instance" {
-  count = local.instance_count
-  ami = "ami-0e38b48473ea57778"
+  count                       = local.instance_count
+  ami                         = "ami-0e38b48473ea57778"
   associate_public_ip_address = true
-  instance_type = "t3a.medium"
-  key_name = "server"
-  vpc_security_group_ids = [aws_security_group.server_production.id]
+  instance_type               = "t3a.medium"
+  key_name                    = "server"
+  vpc_security_group_ids      = [aws_security_group.server_production.id]
 
   root_block_device {
     volume_size = 20
@@ -278,7 +278,7 @@ resource "aws_acm_certificate" "lb_tls_cert" {
     "www.clojars.org",
     "releases.clojars.org"
   ]
-  
+
   lifecycle {
     create_before_destroy = true
   }
@@ -290,7 +290,7 @@ output "cert_validation_options" {
 
 resource "aws_s3_bucket" "lb_logs_bucket" {
   bucket = "clojars-lb-logs"
-  acl = "private"
+  acl    = "private"
 
   lifecycle_rule {
     id      = "delete-old-logs"
@@ -311,28 +311,28 @@ resource "aws_security_group" "lb_production" {
   description = "Allow access to production load balancer"
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
+
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-  
+
   egress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
-    
+
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
@@ -343,15 +343,15 @@ resource "aws_lb" "production" {
   internal           = false
   load_balancer_type = "application"
   ip_address_type    = "dualstack"
-  
+
   security_groups = [aws_security_group.lb_production.id]
-  
+
   subnets = [
     "subnet-bd40afd6", # us-east-2a
     "subnet-d27c58a8", # us-east-2b
     "subnet-5cbf3310"  # us-east-2c
   ]
-  
+
   enable_deletion_protection = true
 
   # access_logs {
@@ -362,11 +362,11 @@ resource "aws_lb" "production" {
 }
 
 resource "aws_lb_target_group" "production" {
-  name     = "production-lb-tg"
-  port     = 80
-  protocol = "HTTP"
+  name        = "production-lb-tg"
+  port        = 80
+  protocol    = "HTTP"
   target_type = "instance"
-  vpc_id = "vpc-d93bfcb2"
+  vpc_id      = "vpc-d93bfcb2"
 }
 
 resource "aws_lb_target_group_attachment" "production_instance" {
@@ -381,8 +381,8 @@ resource "aws_lb_listener" "production" {
   port              = "443"
   protocol          = "HTTPS"
 
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.lb_tls_cert.arn
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = aws_acm_certificate.lb_tls_cert.arn
 
   default_action {
     type             = "forward"
@@ -410,5 +410,5 @@ resource "aws_lb_listener" "production_redir_to_ssl" {
 
 resource "aws_s3_bucket" "deployments_bucket" {
   bucket = "clojars-deployment-artifacts"
-  acl = "private"
+  acl    = "private"
 }
