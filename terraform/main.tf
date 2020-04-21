@@ -191,19 +191,17 @@ resource "aws_security_group" "allow_postgres" {
   description = "Allow access tp postgres server" # typo, but can't be changed w/o recreating RDS resource!
 
   ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = [
-      "172.31.43.101/32" # clojars.org on ec2, private IP. Need to use the value from beta.tf!
-    ] 
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.server_production.id]
   }
 
   egress {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.server_production.id]
   }
 }
 
