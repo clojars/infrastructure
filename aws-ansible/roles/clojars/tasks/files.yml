@@ -53,6 +53,13 @@
     dest: /etc/systemd/system/clojars_deploy.service
     mode: 0644
 
+- name: Enable clojars_deploy.service
+  become: yes
+  become_user: root
+  systemd:
+    name: clojars_deploy
+    enabled: yes
+
 - name: Copy Clojars service template
   become: yes
   become_user: root
@@ -60,6 +67,13 @@
     src: clojars.service.j2
     dest: /etc/systemd/system/clojars.service
     mode: 0644
+
+- name: Enable clojars.service
+  become: yes
+  become_user: root
+  systemd:
+    name: clojars
+    enabled: yes
 
 - name: Copy clojars user sudoers
   become: yes
