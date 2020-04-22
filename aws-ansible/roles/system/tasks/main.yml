@@ -34,6 +34,3 @@
   hostname:
     name: "{{ hostname }}"
 
-- name: Set timezone to UTC
-  when: ansible_date_time.tz != 'UTC'
-  command: timedatectl set-timezone UTC
