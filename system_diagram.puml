@@ -1,0 +1,51 @@
+@startuml system_diagram
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+
+title Clojars System Diagram
+
+Person(admin, "Admin", "A Clojars admin.")
+Person(user, "User", "A Clojars user.")
+
+System_Boundary(terraform, "Terraform managed") {
+  Container(lb, "Load Balancer", "AWS ALB", "clojars.org")
+
+System_Boundary(asg, "Auto-scaling Group") {
+    Container(instance, "Clojars Server", "EC2 instance in ASG", "The Clojars server.")
+  }
+  
+  ContainerDb(database, "Database", "PostgreSQL on RDS", "Stores users, artifact metadata.")
+  ContainerDb(repo_bucket, "Artifact S3 Bucket", "clojars-repo-production", "Stores all artifacts.")
+  ContainerDb(stats_bucket, "Stats S3 Bucket", "clojars-stats-production", "Stores download stat files.")
+  ContainerDb(artifact_index_bucket, "Artifact Index S3 Bucket", "clojars-artifact-index", "Stores a cache of the artifact index.")
+  ContainerDb(deployments_bucket, "Deployments S3 Bucket", "clojars-deployment-artifacts", "Stores deployments of the Clojars app.")
+
+  System_Ext(ses, "Outgoing E-Mail System (SES)", "Sends password reset emails.")
+}
+
+Container(fastly, "Repo/stats CDN", "Fastly", "repo.clojars.org")
+
+Rel(admin, deployments_bucket, "Uploads Clojars app release zips to", "s3")
+Rel(admin, instance, "Triggers deployment on", "ssh")
+
+Rel(user, lb, "Loads web-ui from", "https")
+Rel(user, lb, "Deploys artifacts to", "https")
+Rel(user, fastly, "Reads artifacts from", "https")
+Rel(user, fastly, "Deploys artifacts to", "https")
+
+Rel(lb, asg, "Routes to", "https")
+
+Rel(instance, database, "Uses", "sql")
+Rel(instance, repo_bucket, "Writes artifacts to", "s3")
+Rel(instance, repo_bucket, "Reads artifact pom files from", "s3")
+Rel(instance, stats_bucket, "Writes download stat files to", "s3")
+Rel(instance, fastly, "Redirects artifact GETs to", "https")
+Rel(instance, ses, "Sends emails via", "https")
+Rel(instance, artifact_index_bucket, "Reads/writes artifact index on index update", "s3")
+Rel(instance, deployments_bucket, "Reads Clojars app zip on boot/deploy", "s3")
+
+Rel(ses, user, "Delivers password reset emails to", "smtp")
+
+Rel(fastly, repo_bucket, "Serves artifacts from", "https")
+Rel(fastly, stats_bucket, "Serves download stats from", "https")
+Rel(fastly, lb, "Proxies artifact deploys to", "https")
+@enduml
