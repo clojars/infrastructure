@@ -1,75 +1,130 @@
 # Clojars Server Config
 
-[![Build Status](https://travis-ci.org/clojars/clojars-server-config.svg)](https://travis-ci.org/clojars/clojars-server-config)
+This repo contains the Ansible config for building the AMI for the
+Clojars server, the terraform for managing the Clojars
+infrastructure on AWS, and scripts to deploy a Clojars release.
 
-This repo contains the Ansible config to build a Clojars server from scratch. It includes a Vagrantfile for running and testing locally.
+# System Diagram
 
-# Setting up
+![System Diagram](./system_diagram.png)
 
-Install Virtualbox, Vagrant 1.8, and Ansible 2.0.0. To install Ansible 2 on Homebrew, run `brew install ansible --devel` as it hasn't been officially released yet.
+# Setup
 
-**You must have Jinja 2.8 or higher installed**. Depending on your platform, Jinja 2.7 or lower may be installed by the system. Check with `pip show jinja2`. Homebrew will install the right versions, I'm not so sure about other platforms. To install Jinja2, run `pip install jinja2` or `pip install --upgrade https://pypi.python.org/packages/source/J/Jinja2/Jinja2-2.8.tar.gz` (perhaps with `sudo`). As is quite obvious from this rambling paragraph, some guidance from a Python expert on the correct process here would be very helpful.
+## AWS Credentials
 
-Run `vagrant up` to start up the VM. Before you go any further, run `vagrant snapshot save clean-build`. This will save a snapshot of our VM and allow us to reset our VM state quickly.
+You will also need a AWS access key, exported as `AWS_ACCESS_KEY_ID`
+and `AWS_SECRET_ACCESS_KEY`. These vars need to be set to run
+terraform, build an AMI, or deploy. You will also need to set
+`CLOJARS_SSH_KEY_FILE` to the path to the private key used by the
+server if you want to deploy or ssh in to the server.
 
-Installing Java and updating the apt-cache is the slowest operation in the ansible playbook. You may want to run
+## Terraform
 
+You will need terraform installed to be able to apply changes to the
+infrastructure: https://www.terraform.io/downloads.html (currently
+using v0.12.19).
+
+### Initialization
+
+The terraform state is stored in S3 and uses a DynamoDB table to lock
+that state when it is being altered. On first run, you will need to
+initialize terraform with:
+
+```sh
+cd terraform
+terraform init
 ```
-ansible-playbook \
-   --inventory local --private-key=.vagrant/machines/default/virtualbox/private_key \
-   --user vagrant \
-   java.yml
-```
+### Applying the configuration
 
-before snapshotting to speed up rebuilds.
-
-To test everything is working, run:
-
-```
-ansible all -m ping --inventory local --private-key=.vagrant/machines/default/virtualbox/private_key -u vagrant
-```
-
-You should see
-
-```
-127.0.0.1 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-```
-
-# Private vars
-
-There is some config for Clojars which is sensitive and cannot be publicly shared in the Github repo. This is placed in `private/vars.yml`. For development purposes, `private/vars.yml.example` is a vars file which looks like the real one but with sensitive information replaced. Run `cp private/vars.yml.example private/vars.yml` to create your private vars file.
-
-# Running playbooks
-
-Run:
-
-```
-ansible-playbook -i local --private-key=.vagrant/machines/default/virtualbox/private_key -u vagrant site.yml
+```sh
+cd terraform
+terraform apply
 ```
 
-To restore your vm (I do this every few hours to make sure things haven't drifted too far)
+## Packer
 
-```
-vagrant snapshot restore clean-build
-```
+You will need packer installed to be able to build AMIs:
+https://www.packer.io/downloads.html (currently using v1.5.4).
 
-# Guidelines:
+## Private Vars
+
+There is some config for Clojars which is sensitive and cannot be
+publicly shared in the Github repo. This is placed in
+`aws-ansible/private/vars.yml`. For development purposes,
+`aws-ansible/private_vars.yml.example` is a vars file which looks like
+the real one but with sensitive information replaced. These vars are
+used by the ansible that builds the AMI.
+
+# Listing running instances
+
+There is a convenience script to list all EC2 instances:
+
+`scripts/list-instances.sh`
+
+# Deployment
+
+To deploy a new release of Clojars, you have a few options:
+
+- You can build and upload a new release to S3, then deploy a new AMI
+  that will pick up the release (see below)
+- You can build and upload a new release to S3, then request that a
+  running server switch to that release
+- You can also switch back to an older release
+
+To build and upload a new release, run:
+
+`scripts/upload-release.sh <version-tag>`
+
+This will check to see if an artifact for that tag already exists in
+the deployment bucket. If not, it will pull down the tag from GitHub,
+build an uberjar, then upload a zip containing that uberjar and the
+`scripts/` dir from `clojars-web` to the deployment bucket. 
+
+It then writes a `current-release.txt` containing the tag to the
+deployment bucket.
+
+To deploy a release to a running server, run:
+
+`scripts/deploy.sh <server-ip> <version-tag>`
+
+This will first call `scripts/upload-release.sh`, then ssh to the
+server and run the [deploy-clojars
+script](./aws-ansible/roles/clojars/files/bing-scripts/deploy-clojars). This
+script will pull down the version specified by `current-release.txt`
+and deploy it. This script is the same script that runs when the
+Clojars AMI boots.
+
+# Building an AMI
+
+We build a custom AMI using packer, and apply changes to the AMI with
+ansible. To run packer, call:
+
+`scripts/build_ami.sh`
+
+This will take a few minutes, but will produce a new AMI. See the
+final output from packer to get the AMI ID.
+
+# Deploying a new AMI
+
+1. Edit `terraform/main.tf`, setting the `image_id` in the
+   `prod_launch_config` to the new AMI. AMI changes to a launch
+   configuration don't affect *running* instances, so we will have to
+   force a new instance.
+2. Edit `terraform/main.tf`, setting the `desired_capacity` and
+   `max_size` to `2` for the `prod_asg`. 
+3. Run `terraform apply`. This should cause a new instance to be
+   created in the ASG (there will now be two). 
+4. Wait for that new instance to be fully available, then edit
+   `terraform/main.tf`, setting the `desired_capacity` and `max_size`
+   back to `1` for the `prod_asg`.
+5. Run `terraform apply`. This should cause the *oldest* instance to
+   be shut down.
+
+## Ansible Guidelines
 
 * Follow Ansible [best practices](http://docs.ansible.com/ansible/playbooks_best_practices.html)
 * Add an `{{ ansible_managed }}` comment in the header of all templates and files
 * Place any private files in `private/`
 
-# Misc
-
-To print manually installed packages:
-
-```
-cat /var/log/apt/history.log ) | egrep '^(Start-Date:|Commandline:)' | grep -v aptdaemon | egrep -B1 '^Commandline:'
-```
-
-# License
 
 Distributed under the MIT License. See the file COPYING.

@@ -349,10 +349,10 @@ resource "aws_lb" "production" {
 }
 
 resource "aws_lb_target_group" "production" {
-  name        = "production-lb-tg"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = "vpc-d93bfcb2"
+  name     = "production-lb-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = "vpc-d93bfcb2"
 }
 
 resource "aws_lb_listener" "production" {
@@ -415,9 +415,12 @@ resource "aws_launch_configuration" "prod_launch_config" {
 resource "aws_autoscaling_group" "prod_asg" {
   name = "prod-asg"
 
-  min_size                  = 1
-  max_size                  = 1
-  desired_capacity          = 1
+  min_size = 1
+
+  # adjust these to release a new AMI
+  max_size         = 1
+  desired_capacity = 1
+
   health_check_grace_period = "60"
   health_check_type         = "EC2"
   launch_configuration      = aws_launch_configuration.prod_launch_config.name
