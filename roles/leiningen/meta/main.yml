@@ -1,2 +1,0 @@
-dependencies:
-  - { role: openjdk-8 }

@@ -1,3 +1,0 @@
-- hosts: local
-  roles:
-    - openjdk-8

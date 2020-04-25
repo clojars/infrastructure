@@ -1,7 +1,0 @@
-#!/bin/sh
-
-ansible all \
-  -m ping \
-  --connection=ssh \
-  --inventory=local \
-  --private-key=.vagrant/machines/default/virtualbox/private_key \

@@ -1,3 +1,0 @@
----
-- name: download leiningen uberjar
-  shell: lein version

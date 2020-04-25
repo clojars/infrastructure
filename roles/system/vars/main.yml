@@ -1,5 +1,0 @@
----
-hostname: clojars.org
-mail_domain: clojars.org
-mail_domains: [ clojars.org, clojars ]
-destination: clojars

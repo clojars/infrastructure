@@ -1,4 +1,0 @@
-[local]
-127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-# StrictHostKeyChecking gets in the way when you are rebuilding vagrant machines from scratch
-# Only turn it off in development.

@@ -1,6 +1,0 @@
-- hosts: local
-  roles:
-    - clojars
-  vars_files:
-    - private/vars.yml
-  force_handlers: yes

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-cd /home/clojars
-
-. ./bin/config_env
-
-java -cp /home/clojars/releases/clojars-web-current.jar clojars.tools.migrate_db

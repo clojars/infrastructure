@@ -1,2 +1,0 @@
-Uploads are only allowed over HTTPS.
-Point your client at https://clojars.org/repo/
