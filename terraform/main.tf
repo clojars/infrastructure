@@ -13,7 +13,11 @@ terraform {
 }
 
 locals {
-  instance_count = 1
+  subnet_ids = [
+    "subnet-bd40afd6", # us-east-2a
+    "subnet-d27c58a8", # us-east-2b
+    "subnet-5cbf3310"  # us-east-2c
+  ]
 }
 
 
@@ -255,19 +259,6 @@ resource "aws_security_group" "server_production" {
   }
 }
 
-resource "aws_instance" "production_instance" {
-  count                       = local.instance_count
-  ami                         = "ami-0e38b48473ea57778"
-  associate_public_ip_address = true
-  instance_type               = "t3a.medium"
-  key_name                    = "server"
-  vpc_security_group_ids      = [aws_security_group.server_production.id]
-
-  root_block_device {
-    volume_size = 20
-  }
-}
-
 resource "aws_acm_certificate" "lb_tls_cert" {
   domain_name       = "clojars.org"
   validation_method = "DNS"
@@ -346,11 +337,7 @@ resource "aws_lb" "production" {
 
   security_groups = [aws_security_group.lb_production.id]
 
-  subnets = [
-    "subnet-bd40afd6", # us-east-2a
-    "subnet-d27c58a8", # us-east-2b
-    "subnet-5cbf3310"  # us-east-2c
-  ]
+  subnets = local.subnet_ids
 
   enable_deletion_protection = true
 
@@ -365,15 +352,7 @@ resource "aws_lb_target_group" "production" {
   name        = "production-lb-tg"
   port        = 80
   protocol    = "HTTP"
-  target_type = "instance"
   vpc_id      = "vpc-d93bfcb2"
-}
-
-resource "aws_lb_target_group_attachment" "production_instance" {
-  count            = local.instance_count
-  target_group_arn = aws_lb_target_group.production.arn
-  target_id        = aws_instance.production_instance[count.index].id
-  port             = 80
 }
 
 resource "aws_lb_listener" "production" {
@@ -411,4 +390,46 @@ resource "aws_lb_listener" "production_redir_to_ssl" {
 resource "aws_s3_bucket" "deployments_bucket" {
   bucket = "clojars-deployment-artifacts"
   acl    = "private"
+}
+
+# asg
+
+resource "aws_launch_configuration" "prod_launch_config" {
+  name_prefix     = "prod-asg-"
+  image_id        = "ami-0dc68e39e0b4d4b3b"
+  instance_type   = "t3a.medium"
+  key_name        = "server"
+  security_groups = [aws_security_group.server_production.id]
+
+  associate_public_ip_address = true
+
+  root_block_device {
+    volume_size = 20
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "prod_asg" {
+  name = "prod-asg"
+
+  min_size                  = 1
+  max_size                  = 1
+  desired_capacity          = 1
+  health_check_grace_period = "60"
+  health_check_type         = "EC2"
+  launch_configuration      = aws_launch_configuration.prod_launch_config.name
+  vpc_zone_identifier       = local.subnet_ids
+
+  termination_policies = [
+    "OldestInstance",
+    "Default",
+  ]
+}
+
+resource "aws_autoscaling_attachment" "prod_lb_asg" {
+  autoscaling_group_name = aws_autoscaling_group.prod_asg.id
+  alb_target_group_arn   = aws_lb_target_group.production.arn
 }
