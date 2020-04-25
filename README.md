@@ -124,7 +124,7 @@ final output from packer to get the AMI ID.
 
 * Follow Ansible [best practices](http://docs.ansible.com/ansible/playbooks_best_practices.html)
 * Add an `{{ ansible_managed }}` comment in the header of all templates and files
-* Place any private files in `private/`
+* Place any private files in `aws-ansible/private/`
 
 
 Distributed under the MIT License. See the file COPYING.
