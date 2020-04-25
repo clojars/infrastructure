@@ -4,7 +4,7 @@
   become: true
   become_user: root
   vars_files:
-    - ../private/vars.yml
+    - ./private/vars.yml
 
   roles:
     - system

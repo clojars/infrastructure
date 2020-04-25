@@ -1,7 +1,3 @@
-private/*
-!private/var.yaml.example
-!private/bootstrap.sh
-.vagrant
+aws-ansible/private/*
 *.pyc
-site.retry
 .idea/
