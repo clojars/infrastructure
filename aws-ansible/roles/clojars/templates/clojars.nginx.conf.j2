@@ -71,13 +71,11 @@ server {
     limit_req zone=login burst=5;
 
     proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_pass http://clojars-web;
   }
 
   location @clojars_webapp {
     proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_pass http://clojars-web;
   }
 
