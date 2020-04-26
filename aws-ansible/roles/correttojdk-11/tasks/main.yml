@@ -1,0 +1,7 @@
+# Based on instructions from https://docs.aws.amazon.com/corretto/latest/corretto-11-ug/amazon-linux-install.html
+---
+- name: install openjdk 11
+  become: yes
+  yum:
+    name: java-11-amazon-corretto-headless
+    state: latest
