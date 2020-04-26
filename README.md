@@ -18,6 +18,31 @@ terraform, build an AMI, or deploy. You will also need to set
 `CLOJARS_SSH_KEY_FILE` to the path to the private key used by the
 server if you want to deploy or ssh in to the server.
 
+To apply the terraform, you will need two configuration vars set in
+your environment: `TF_VAR_db_password` and `TF_VAR_db_username`. Both
+of these values are available from `aws-ansible/private/vars.yml`.
+
+One way to have all those vars set is to create a wrapper script that
+sets them (called `clojars-env` in this example):
+
+```sh
+#!/bin/bash
+
+export AWS_ACCESS_KEY_ID=ASDFASDFASDF
+export AWS_SECRET_ACCESS_KEY=3ASD3434AA
+export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
+
+export TF_VAR_db_password=asdfasdfasfdsadf
+export TF_VAR_db_username=foo
+
+exec $@
+
+```
+
+Then execute commands with:
+
+`clojars-env terraform apply` 
+
 ## Terraform
 
 You will need terraform installed to be able to apply changes to the
