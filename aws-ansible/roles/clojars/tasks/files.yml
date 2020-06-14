@@ -9,7 +9,7 @@
   become: yes
   become_user: root
   file:
-    path: /logs
+    path: /var/log/clojars
     state: directory
     mode: 0755
     owner: clojars

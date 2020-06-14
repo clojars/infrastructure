@@ -1,5 +1,4 @@
 al2_packages:
-  - cronolog
   - htop
   - mosh
   - nginx
