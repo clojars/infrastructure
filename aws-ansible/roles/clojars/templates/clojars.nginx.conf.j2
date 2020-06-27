@@ -78,6 +78,15 @@ server {
     proxy_pass http://clojars-web;
   }
 
+  # prevent excessive password reset requests as a spam vector
+  location /forgot-password {
+    # uses default burst=0
+    limit_req zone=login;
+
+    proxy_set_header Host $host;
+    proxy_pass http://clojars-web;
+  }
+
   location @clojars_webapp {
     proxy_set_header Host $host;
     proxy_pass http://clojars-web;
