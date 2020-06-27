@@ -396,7 +396,7 @@ resource "aws_s3_bucket" "deployments_bucket" {
 
 resource "aws_launch_configuration" "prod_launch_config" {
   name_prefix     = "prod-asg-"
-  image_id        = "ami-03dcbd557cc034cf6"
+  image_id        = "ami-04aa3aa52aac377ae"
   instance_type   = "t3a.medium"
   key_name        = "server"
   security_groups = [aws_security_group.server_production.id]
@@ -417,7 +417,7 @@ resource "aws_autoscaling_group" "prod_asg" {
 
   min_size = 1
 
-  # adjust these to release a new AMI
+  # adjust these to 2 release a new AMI
   max_size         = 1
   desired_capacity = 1
 
