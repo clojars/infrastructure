@@ -59,6 +59,10 @@ server {
 
     location /repo/opencv-native {
        client_max_body_size 100m;
+       limit_except GET HEAD {
+         # send uploads to webapp
+         proxy_pass http://clojars-web;
+       }
     }
 
     if ($request_method ~ "GET|HEAD") {
