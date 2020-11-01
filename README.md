@@ -47,7 +47,7 @@ Then execute commands with:
 
 You will need terraform installed to be able to apply changes to the
 infrastructure: https://www.terraform.io/downloads.html (currently
-using v0.12.19).
+using v0.13.5).
 
 ### Initialization
 

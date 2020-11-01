@@ -213,7 +213,6 @@ resource "aws_db_instance" "default" {
   allocated_storage       = 20
   backup_retention_period = 7
   engine                  = "postgres"
-  engine_version          = "11.6"
   identifier              = "clojars-production"
   instance_class          = "db.t3.micro"
   name                    = "clojars"
