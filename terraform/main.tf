@@ -424,14 +424,9 @@ resource "aws_autoscaling_group" "prod_asg" {
   health_check_type         = "EC2"
   launch_configuration      = aws_launch_configuration.prod_launch_config.name
   vpc_zone_identifier       = local.subnet_ids
-
+  target_group_arns         = [aws_lb_target_group.production.arn]
   termination_policies = [
     "OldestInstance",
     "Default",
   ]
-}
-
-resource "aws_autoscaling_attachment" "prod_lb_asg" {
-  autoscaling_group_name = aws_autoscaling_group.prod_asg.id
-  alb_target_group_arn   = aws_lb_target_group.production.arn
 }
