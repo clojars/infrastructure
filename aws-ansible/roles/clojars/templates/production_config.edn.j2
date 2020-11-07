@@ -4,6 +4,8 @@
  :deletion-backup-dir "/home/clojars/repo-deleted"
  :db {:host "{{ postgres_host }}"
       :password "{{ postgres_password }}"}
+ :github-oauth-client-id "{{ github_oauth_client_id }}"
+ :github-oauth-client-secret "{{ github_oauth_client_secret }}"
  :mail {:from "contact@clojars.org"
         :hostname "email-smtp.us-east-1.amazonaws.com"
         :port 587
