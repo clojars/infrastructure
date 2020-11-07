@@ -1,19 +1,13 @@
 ---
-admins: [{ name: test1, email: test1@example.com, contact: yes, active: yes },
-         { name: test2, email: test2@example.com, contact: no, active: yes },
-         { name: test3, email: test3@example.com, contact: yes, active: no },
-         { name: test4, email: test4@example.com, contact: yes, active: no }]
-cdn_combined_log_container: combined-logs
-cdn_log_container: cdn-logs
-cdn_token: abd33435454aa
-cloudfiles_container: el-repo
-cloudfiles_token: abd33435454aaabd33435454aa
-cloudfiles_user: some-user
-email_aliases: [[ root, contact ],
-                [ postmaster, root ],
-                [ webmaster, contact ],
-                [ hostmaster, contact ]]
-sentry_token: 5ccf4c1826a248d9b2734c0ffc2296346E9caa2b62c0dc128750fe232da5023c
-sentry_dsn: https://1826a248d9b2734c0ffc2296346E9caa2b62c0dc128:1826a248d9b2734c0ffc2296346E9caa2b62c0dc128@sentry.io/999999
-UBUNTU_COMMON_ROOT_PASSWORD: r123
-UBUNTU_COMMON_LOGWATCH_EMAIL: root
+aws_access_key_id: foo
+aws_secret_access_key: bar
+cdn_token: abcd
+github_oauth_client_id: asdf
+github_oauth_client_secret: asdf
+postgres_host: something.us-east-2.rds.amazonaws.com
+postgres_password: sekret
+postgres_username: auser
+sentry_dsn: https://abc:def@sentry.io/1234
+sentry_token: atoken
+ses_username: asdf
+ses_password: asdfd
