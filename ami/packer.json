@@ -4,7 +4,7 @@
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
     "region": "us-east-2",
-    "instance_type": "t3a.medium",
+    "instance_type": "t4g.small",
     "ssh_username": "ec2-user",
     "source_ami": "{{user `source_ami_id`}}",
     "ami_name": "clojars-server {{timestamp}}",
