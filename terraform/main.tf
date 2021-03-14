@@ -395,7 +395,7 @@ resource "aws_s3_bucket" "deployments_bucket" {
 
 resource "aws_launch_configuration" "prod_launch_config" {
   name_prefix     = "prod-asg-"
-  image_id        = "ami-06d5de82e1b69ce62"
+  image_id        = "ami-0d5f327123003fbb3"
   instance_type   = "t4g.medium"
   key_name        = "server"
   security_groups = [aws_security_group.server_production.id]
