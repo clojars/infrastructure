@@ -57,3 +57,12 @@
     hour: "1"
     job: "find /tmp -name 'upload-*' -type d -mtime +3 -exec rm -rf {} +"
   
+- name: Set clearing of audit log
+  become: true
+  cron:
+    name: "Clear audit log info > 30 days old"
+    user: "clojars"
+    minute: "0"
+    hour: "0"
+    job: ". ~/bin/config_env; env PGPASSWORD=$POSTGRES_PASSWORD psql -h $POSTGRES_HOST -p 5432 -U clojars -c \"delete from audit where created < (now() - interval '30 days');\""
+  
