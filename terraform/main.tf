@@ -214,7 +214,7 @@ resource "aws_db_instance" "default" {
   backup_retention_period = 7
   engine                  = "postgres"
   identifier              = "clojars-production"
-  instance_class          = "db.t3.micro"
+  instance_class          = "db.t3.small"
   name                    = "clojars"
   password                = var.db_password
   publicly_accessible     = true
