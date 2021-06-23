@@ -34,3 +34,9 @@
   hostname:
     name: "{{ hostname }}"
 
+- name: set admin authorized_keys
+  authorized_key:
+    user: ec2-user
+    key: "{{ item }}"
+    state: present
+  loop: "{{ ssh_keys }}"
