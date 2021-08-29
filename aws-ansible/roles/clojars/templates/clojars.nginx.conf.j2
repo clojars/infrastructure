@@ -1,18 +1,20 @@
 # {{ ansible_managed }}
 
-limit_req_zone $binary_remote_addr zone=login:10m rate=1r/s;
+# Set up rate limiting for login. This will allow a request every
+# second for a single IP address for routes using limit_req. Any
+# requests beyond that limit will return a 429.
+limit_req_zone $binary_remote_addr zone=rate_limit_login:10m rate=1r/s;
+limit_req_status 429;
+
+# Set up rate limiting for forgot-password. This will allow two
+# requests every minute for a single IP address for routes using
+# limit_req. Any requests beyond that limit will return a 429
+# (inherited from the above limit_req_status directive).
+limit_req_zone $binary_remote_addr zone=rate_limit_forgot_pw:10m rate=2r/m;
 
 upstream clojars-web {
   server localhost:8001 max_fails=3;
 }
-
-# server {
-#   # Redirect http://www.clojars.org to http://clojars.org
-#   listen [::]:80 ipv6only=off;
-
-#   server_name www.clojars.org www new.clojars.org;
-#   rewrite  ^ http://clojars.org$request_uri?  permanent;
-# }
 
 server {
   listen [::]:80 ipv6only=off default_server;        
@@ -72,7 +74,9 @@ server {
   }
 
   location /login {
-    limit_req zone=login burst=5;
+    # rate-limit login requests, but allow up to 5 requests before
+    # rate-limiting kicks in.
+    limit_req zone=rate_limit_login burst=5;
 
     proxy_set_header Host $host;
     proxy_pass http://clojars-web;
@@ -80,8 +84,9 @@ server {
 
   # prevent excessive password reset requests as a spam vector
   location /forgot-password {
-    # uses default burst=0
-    limit_req zone=login;
+    # rate-limit forgot-password requests, but with no bursting, so it
+    # will only allow two requests per minute.
+    limit_req zone=rate_limit_forgot_pw;
 
     proxy_set_header Host $host;
     proxy_pass http://clojars-web;
