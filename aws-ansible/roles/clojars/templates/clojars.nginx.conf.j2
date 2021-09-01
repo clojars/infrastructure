@@ -6,11 +6,11 @@
 limit_req_zone $binary_remote_addr zone=rate_limit_login:10m rate=1r/s;
 limit_req_status 429;
 
-# Set up rate limiting for forgot-password. This will allow two
-# requests every minute for a single IP address for routes using
-# limit_req. Any requests beyond that limit will return a 429
-# (inherited from the above limit_req_status directive).
-limit_req_zone $binary_remote_addr zone=rate_limit_forgot_pw:10m rate=2r/m;
+# Set up rate limiting for forgot-password. This will allow five
+# requests every minute (one every 12 seconds) for a single IP address
+# for routes using limit_req. Any requests beyond that limit will
+# return a 429 (inherited from the above limit_req_status directive).
+limit_req_zone $binary_remote_addr zone=rate_limit_forgot_pw:10m rate=5r/m;
 
 upstream clojars-web {
   server localhost:8001 max_fails=3;
@@ -75,7 +75,8 @@ server {
 
   location /login {
     # rate-limit login requests, but allow up to 5 requests before
-    # rate-limiting kicks in.
+    # rate-limiting kicks in. Those 5 requests will be limited to 1/s
+    # by essentially sleeping eavh request to match the rate-limit rate.
     limit_req zone=rate_limit_login burst=5;
 
     proxy_set_header Host $host;
@@ -84,9 +85,9 @@ server {
 
   # prevent excessive password reset requests as a spam vector
   location /forgot-password {
-    # rate-limit forgot-password requests, but with no bursting, so it
-    # will only allow two requests per minute.
-    limit_req zone=rate_limit_forgot_pw;
+    # rate-limit forgot-password requests, but allow up to 5 requests
+    # before rate-limiting kicks in. Don't delay those five requests.
+    limit_req zone=rate_limit_forgot_pw burst=5 nodelay;
 
     proxy_set_header Host $host;
     proxy_pass http://clojars-web;
