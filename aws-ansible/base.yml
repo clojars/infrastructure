@@ -8,7 +8,7 @@
 
   roles:
     - system
-    - correttojdk-11
+    - correttojdk
     - leiningen
     - clojars
   

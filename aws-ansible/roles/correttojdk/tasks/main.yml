@@ -1,0 +1,16 @@
+# Based on instructions from https://docs.aws.amazon.com/corretto/latest/corretto-17-ug/amazon-linux-install.html
+---
+- name: Import coretto repository signing key
+  become: yes
+  command: rpm --import https://yum.corretto.aws/corretto.key
+- name: Add coretto yum repository
+  command: curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
+  become: yes
+  args:
+    creates: /etc/yum.repos.d/corretto.repo
+    warn: false
+- name: install corretto 17
+  become: yes
+  yum:
+    name: java-17-amazon-corretto-headless
+    state: latest
