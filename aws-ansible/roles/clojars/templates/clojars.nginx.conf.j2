@@ -59,11 +59,18 @@ server {
       proxy_pass http://clojars-web;
     }
 
+    # nested location blocks inherit the above settings except for proxy_pass
+    # and the conditional rewrites, so we have to duplicate them
     location /repo/afterglow/afterglow {
        client_max_body_size 50m;
        limit_except GET HEAD {
          # send uploads to webapp
          proxy_pass http://clojars-web;
+       }
+
+       if ($request_method ~ "GET|HEAD") {
+          rewrite ^/repo$ https://repo.clojars.org redirect;
+          rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
        }
     }
 
@@ -72,6 +79,11 @@ server {
        limit_except GET HEAD {
          # send uploads to webapp
          proxy_pass http://clojars-web;
+       }
+
+       if ($request_method ~ "GET|HEAD") {
+          rewrite ^/repo$ https://repo.clojars.org redirect;
+          rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
        }
     }
 
