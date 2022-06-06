@@ -19,7 +19,7 @@ System_Boundary(asg, "Auto-scaling Group") {
   ContainerDb(artifact_index_bucket, "Artifact Index S3 Bucket", "clojars-artifact-index", "Stores a cache of the artifact index.")
   ContainerDb(deployments_bucket, "Deployments S3 Bucket", "clojars-deployment-artifacts", "Stores deployments of the Clojars app.")
 
-  System_Ext(ses, "Outgoing E-Mail System (SES)", "Sends password reset emails.")
+  System_Ext(ses, "Outgoing E-Mail System (SES)", "Sends system notification emails.")
 }
 
 Container(fastly, "Repo/stats CDN", "Fastly", "repo.clojars.org")
@@ -38,12 +38,12 @@ Rel(instance, database, "Uses", "sql")
 Rel(instance, repo_bucket, "Writes artifacts to", "s3")
 Rel(instance, repo_bucket, "Reads artifact pom files from", "s3")
 Rel(instance, stats_bucket, "Writes download stat files to", "s3")
-Rel(instance, fastly, "Redirects artifact GETs to", "https")
+Rel(instance, fastly, "Redirects artifact GETs to & Purges paths from", "https")
 Rel(instance, ses, "Sends emails via", "https")
 Rel(instance, artifact_index_bucket, "Reads/writes artifact index on index update", "s3")
 Rel(instance, deployments_bucket, "Reads Clojars app zip on boot/deploy", "s3")
 
-Rel(ses, user, "Delivers password reset emails to", "smtp")
+Rel(ses, user, "Delivers system notification emails to", "smtp")
 
 Rel(fastly, repo_bucket, "Serves artifacts from", "https")
 Rel(fastly, stats_bucket, "Serves download stats from", "https")
