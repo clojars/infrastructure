@@ -9,7 +9,11 @@ Restart=on-failure
 WorkingDirectory=/home/clojars
 Environment="CLOJARS_EXTRA_CONFIG=data/conf/production_config.edn"
 
-ExecStart=/bin/java -Dnla.node=clojars -Dlog.level=INFO -Dlog.dir=/var/log/clojars -Xmx1024m -server "-XX:OnOutOfMemoryError=kill -9 %p" -cp releases/clojars-web-current.jar clojars.main
+ExecStart=/bin/java -Dnla.node=clojars -Dlog.level=INFO -Dlog.dir=/var/log/clojars \
+  -Xmx1024m \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -XX:+ExitOnOutOfMemoryError \
+  -cp releases/clojars-web-current.jar clojars.main
 
 [Install]
 WantedBy=multi-user.target
