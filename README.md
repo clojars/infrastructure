@@ -32,6 +32,7 @@ sets them (called `clojars-env` in this example):
 
 export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
+export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
 
 export TF_VAR_db_password=asdfasdfasfdsadf
@@ -55,6 +56,7 @@ Create a `.envrc` file at the root of the repo:
 ```
 export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
+export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
 
 export TF_VAR_db_password=asdfasdfasfdsadf
@@ -157,15 +159,11 @@ final output from packer to get the AMI ID.
    `prod_launch_config` to the new AMI. AMI changes to a launch
    configuration don't affect *running* instances, so we will have to
    force a new instance.
-2. Edit `terraform/main.tf`, setting the `desired_capacity` and
-   `max_size` to `2` for the `prod_asg`. 
-3. Run `terraform apply`. This should cause a new instance to be
-   created in the ASG (there will now be two). 
-4. Wait for that new instance to be fully available, then edit
-   `terraform/main.tf`, setting the `desired_capacity` and `max_size`
-   back to `1` for the `prod_asg`.
-5. Run `terraform apply`. This should cause the *oldest* instance to
-   be shut down.
+2. Start an instance refresh. This will create a new instance, wait for
+   health checks to pass, and then terminate the old instance.
+   ```sh
+   aws autoscaling start-instance-refresh --auto-scaling-group-name=prod-asg
+   ```
 
 ## Ansible Guidelines
 
