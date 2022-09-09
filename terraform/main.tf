@@ -397,7 +397,7 @@ resource "aws_launch_configuration" "prod_launch_config" {
   name_prefix     = "prod-asg-"
   image_id        = "ami-017033fddf0d6de7b"
   instance_type   = "t4g.medium"
-  key_name        = "server"
+  key_name        = "server-2022"
   security_groups = [aws_security_group.server_production.id]
 
   associate_public_ip_address = true
