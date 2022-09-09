@@ -1,3 +1,4 @@
 aws-ansible/private/*
 *.pyc
 .idea/
+.envrc
