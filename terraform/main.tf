@@ -25,10 +25,18 @@ locals {
 
 resource "aws_s3_bucket" "tf_state" {
   bucket = "clojars-tf-state"
-  acl    = "private"
+}
 
-  versioning {
-    enabled = true
+resource "aws_s3_bucket_acl" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
 }
 
@@ -83,18 +91,30 @@ resource "aws_iam_user_policy_attachment" "server_user_policy_attach" {
 
 resource "aws_s3_bucket" "fastly_logs_bucket" {
   bucket = "clojars-fastly-logs"
-  acl    = "private"
+}
 
-  lifecycle_rule {
-    id      = "delete-old-logs"
-    enabled = true
+resource "aws_s3_bucket_acl" "fastly_logs_bucket" {
+  bucket = aws_s3_bucket.fastly_logs_bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "fastly_logs_bucket" {
+  bucket = aws_s3_bucket.fastly_logs_bucket.id
+
+  rule {
+    id = "delete-old-logs"
 
     expiration {
       days = "14"
     }
 
     noncurrent_version_expiration {
-      days = "14"
+      noncurrent_days = "14"
+    }
+    status = "Enabled"
+
+    filter {
+      prefix = ""
     }
   }
 }
@@ -147,7 +167,15 @@ resource "aws_iam_user_policy_attachment" "fastly_logging_policy_attach" {
 
 resource "aws_s3_bucket" "dev_repo_bucket" {
   bucket = "clojars-repo-development"
+}
+
+resource "aws_s3_bucket_acl" "dev_repo_bucket" {
+  bucket = aws_s3_bucket.dev_repo_bucket.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_cors_configuration" "dev_repo_bucket" {
+  bucket = aws_s3_bucket.dev_repo_bucket.id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -158,7 +186,15 @@ resource "aws_s3_bucket" "dev_repo_bucket" {
 
 resource "aws_s3_bucket" "production_repo_bucket" {
   bucket = "clojars-repo-production"
+}
+
+resource "aws_s3_bucket_acl" "production_repo_bucket" {
+  bucket = aws_s3_bucket.production_repo_bucket.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_cors_configuration" "production_repo_bucket" {
+  bucket = aws_s3_bucket.production_repo_bucket.id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -171,7 +207,15 @@ resource "aws_s3_bucket" "production_repo_bucket" {
 
 resource "aws_s3_bucket" "stats_bucket" {
   bucket = "clojars-stats-production"
+}
+
+resource "aws_s3_bucket_acl" "stats_bucket" {
+  bucket = aws_s3_bucket.stats_bucket.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_cors_configuration" "stats_bucket" {
+  bucket = aws_s3_bucket.stats_bucket.id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -215,7 +259,7 @@ resource "aws_db_instance" "default" {
   engine                  = "postgres"
   identifier              = "clojars-production"
   instance_class          = "db.t3.small"
-  name                    = "clojars"
+  db_name                 = "clojars"
   password                = var.db_password
   publicly_accessible     = true
   storage_type            = "gp2"
@@ -227,6 +271,10 @@ resource "aws_db_instance" "default" {
 
 resource "aws_s3_bucket" "artifact_index_bucket" {
   bucket = "clojars-artifact-index"
+}
+
+resource "aws_s3_bucket_acl" "artifact_index_bucket" {
+  bucket = aws_s3_bucket.artifact_index_bucket.id
   acl    = "private"
 }
 
@@ -280,18 +328,30 @@ output "cert_validation_options" {
 
 resource "aws_s3_bucket" "lb_logs_bucket" {
   bucket = "clojars-lb-logs"
-  acl    = "private"
+}
 
-  lifecycle_rule {
-    id      = "delete-old-logs"
-    enabled = true
+resource "aws_s3_bucket_acl" "lb_logs_bucket" {
+  bucket = aws_s3_bucket.lb_logs_bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "lb_logs_bucket" {
+  bucket = aws_s3_bucket.lb_logs_bucket.id
+
+  rule {
+    id = "delete-old-logs"
 
     expiration {
       days = "14"
     }
 
     noncurrent_version_expiration {
-      days = "14"
+      noncurrent_days = "14"
+    }
+    status = "Enabled"
+
+    filter {
+      prefix = ""
     }
   }
 }
@@ -388,6 +448,10 @@ resource "aws_lb_listener" "production_redir_to_ssl" {
 
 resource "aws_s3_bucket" "deployments_bucket" {
   bucket = "clojars-deployment-artifacts"
+}
+
+resource "aws_s3_bucket_acl" "deployments_bucket" {
+  bucket = aws_s3_bucket.deployments_bucket.id
   acl    = "private"
 }
 
