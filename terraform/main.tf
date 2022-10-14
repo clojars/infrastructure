@@ -254,17 +254,18 @@ resource "aws_security_group" "allow_postgres" {
 }
 
 resource "aws_db_instance" "default" {
-  allocated_storage       = 20
-  backup_retention_period = 7
-  engine                  = "postgres"
-  identifier              = "clojars-production"
-  instance_class          = "db.t3.small"
-  db_name                 = "clojars"
-  password                = var.db_password
-  publicly_accessible     = true
-  storage_type            = "gp2"
-  username                = var.db_username
-  vpc_security_group_ids  = [aws_security_group.allow_postgres.id]
+  allocated_storage            = 20
+  backup_retention_period      = 7
+  engine                       = "postgres"
+  identifier                   = "clojars-production"
+  instance_class               = "db.t3.small"
+  db_name                      = "clojars"
+  password                     = var.db_password
+  publicly_accessible          = true
+  performance_insights_enabled = true
+  storage_type                 = "gp2"
+  username                     = var.db_username
+  vpc_security_group_ids       = [aws_security_group.allow_postgres.id]
 }
 
 # bucket for storing artifact index
