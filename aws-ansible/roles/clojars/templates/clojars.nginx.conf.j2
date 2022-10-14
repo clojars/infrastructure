@@ -18,7 +18,7 @@ upstream clojars-web {
 
 server {
   listen [::]:80 ipv6only=off default_server;        
-  access_log  /var/log/nginx/clojars.access.log;
+  access_log  /var/log/nginx/clojars.access.log main;
   root /var/www/clojars;
     
   add_header Strict-Transport-Security "max-age=31536000";
