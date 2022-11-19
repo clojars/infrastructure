@@ -460,7 +460,7 @@ resource "aws_s3_bucket_acl" "deployments_bucket" {
 
 resource "aws_launch_configuration" "prod_launch_config" {
   name_prefix     = "prod-asg-"
-  # Release a new AMI with `aws autoscaling start-instance-refresh --auto-scaling-group-name=prod-asg` after applying
+  # Release a new AMI with ../scripts/cycle-instance.sh after applying
   image_id        = "ami-07e9f47136be5ef73"
   instance_type   = "t4g.medium"
   key_name        = "server-2022"
