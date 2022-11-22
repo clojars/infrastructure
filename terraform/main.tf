@@ -315,7 +315,8 @@ resource "aws_acm_certificate" "lb_tls_cert" {
     "beta.clojars.org",
     "ipv6.clojars.org",
     "www.clojars.org",
-    "releases.clojars.org"
+    "releases.clojars.org",
+    "clojars.net"
   ]
 
   lifecycle {
