@@ -446,6 +446,25 @@ resource "aws_lb_listener" "production_redir_to_ssl" {
   }
 }
 
+resource "aws_lb_listener_rule" "net_to_org" {
+  listener_arn = aws_lb_listener.production.arn
+
+  action {
+    type = "redirect"
+
+    redirect {
+      host        = "clojars.org"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["clojars.net"]
+    }
+  }
+}
+
 # s3 bucket for deployments
 
 resource "aws_s3_bucket" "deployments_bucket" {
