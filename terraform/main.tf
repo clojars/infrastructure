@@ -478,18 +478,24 @@ resource "aws_s3_bucket_acl" "deployments_bucket" {
 
 # asg
 
-resource "aws_launch_configuration" "prod_launch_config" {
+resource "aws_launch_template" "prod_launch_template" {
   name_prefix     = "prod-asg-"
   # Release a new AMI with ../scripts/cycle-instance.sh after applying
   image_id        = "ami-07e9f47136be5ef73"
   instance_type   = "t4g.medium"
   key_name        = "server-2022"
-  security_groups = [aws_security_group.server_production.id]
 
-  associate_public_ip_address = true
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups             = [aws_security_group.server_production.id]
+  }
 
-  root_block_device {
-    volume_size = 30
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 30
+    }
   }
 
   lifecycle {
@@ -505,9 +511,13 @@ resource "aws_autoscaling_group" "prod_asg" {
   max_size         = 1
   desired_capacity = 1
 
+  launch_template {
+    id      = aws_launch_template.prod_launch_template.id
+    version = "$Latest"
+  }
+
   health_check_grace_period = "60"
   health_check_type         = "EC2"
-  launch_configuration      = aws_launch_configuration.prod_launch_config.name
   vpc_zone_identifier       = local.subnet_ids
   target_group_arns         = [aws_lb_target_group.production.arn]
   termination_policies = [
