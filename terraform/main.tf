@@ -481,7 +481,7 @@ resource "aws_s3_bucket_acl" "deployments_bucket" {
 resource "aws_launch_template" "prod_launch_template" {
   name_prefix     = "prod-asg-"
   # Release a new AMI with ../scripts/cycle-instance.sh after applying
-  image_id        = "ami-07e9f47136be5ef73"
+  image_id        = "ami-0d73cdef589c86ad1"
   instance_type   = "t4g.medium"
   key_name        = "server-2022"
 
