@@ -226,12 +226,12 @@ resource "aws_s3_bucket_cors_configuration" "stats_bucket" {
 
 # RDS
 
-variable "db_password" {
-  type = string
+data "aws_ssm_parameter" "db_password" {
+  name = "/clojars/production/db_password"
 }
 
-variable "db_username" {
-  type = string
+data "aws_ssm_parameter" "db_username" {
+  name = "/clojars/production/db_user"
 }
 
 resource "aws_security_group" "allow_postgres" {
@@ -260,11 +260,11 @@ resource "aws_db_instance" "default" {
   identifier                   = "clojars-production"
   instance_class               = "db.t3.small"
   db_name                      = "clojars"
-  password                     = var.db_password
+  password                     = data.aws_ssm_parameter.db_password.value
   publicly_accessible          = true
   performance_insights_enabled = true
   storage_type                 = "gp2"
-  username                     = var.db_username
+  username                     = data.aws_ssm_parameter.db_username.value
   vpc_security_group_ids       = [aws_security_group.allow_postgres.id]
 }
 

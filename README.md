@@ -35,11 +35,7 @@ export AWS_SECRET_ACCESS_KEY=3ASD3434AA
 export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
 
-export TF_VAR_db_password=asdfasdfasfdsadf
-export TF_VAR_db_username=foo
-
 exec $@
-
 ```
 
 Then execute commands with:
@@ -58,9 +54,6 @@ export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
 export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
-
-export TF_VAR_db_password=asdfasdfasfdsadf
-export TF_VAR_db_username=foo
 ```
 
 Install direnv and run `direnv allow` in the repo directory. Now, 
