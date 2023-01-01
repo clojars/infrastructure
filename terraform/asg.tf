@@ -2,6 +2,14 @@ data "aws_ssm_parameter" "ami_id" {
   name = "/clojars/production/ami_id"
 }
 
+locals {
+  subnet_ids = [
+    "subnet-bd40afd6", # us-east-2a
+    "subnet-d27c58a8", # us-east-2b
+    "subnet-5cbf3310"  # us-east-2c
+  ]
+}
+
 resource "aws_security_group" "server_production" {
   name        = "server_production"
   description = "Allow access to production server"
