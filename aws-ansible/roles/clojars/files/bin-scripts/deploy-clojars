@@ -4,8 +4,6 @@ set -e
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-. "$dir/config_env"
-
 arg=${1:-restart}
 
 bucket="s3://clojars-deployment-artifacts"
@@ -25,6 +23,8 @@ cp -f scripts/* /home/clojars/bin
 chmod +x /home/clojars/bin/*
 
 ln -sf "${releases}/clojars-web-${version}-standalone.jar" "${releases}/clojars-web-current.jar"
+
+SENTRY_TOKEN=$(aws ssm get-parameter --name "/clojars/production/sentry_token" --with-decryption --query "Parameter.Value")
 
 curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${version}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
 

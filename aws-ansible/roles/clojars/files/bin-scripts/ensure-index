@@ -2,11 +2,9 @@
 
 INDEX_DIR="/home/clojars/data/index/"
 
-. /home/clojars/bin/config_env
-
 if [ -z "$(ls -A $INDEX_DIR)" ]; then
   echo "Downloading index backup..."
-  aws s3 cp --no-progress "s3://${S3_INDEX_BUCKET}/artifact-index.tgz" /tmp/artifact-index.tgz
+  aws s3 cp --no-progress "s3://clojars-artifact-index/artifact-index.tgz" /tmp/artifact-index.tgz
 
   echo "Extracting index backup..."
   cd /home/clojars/
