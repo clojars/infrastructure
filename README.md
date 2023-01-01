@@ -143,24 +143,22 @@ ansible. To run packer, call:
 
 `scripts/build_ami.sh`
 
-This will take a few minutes, but will produce a new AMI. See the
-final output from packer to get the AMI ID.
+This will take a few minutes, but will produce a new AMI. The ID of the new AMI
+will be written to the `/clojars/production/ami_id` SSM parameter, which is read by `terraform/asg.tf`.
 
 # Deploying a new AMI
 
-1. Edit `terraform/main.tf`, setting the `image_id` in the
-   `prod_launch_config` to the new AMI. AMI changes to a launch
-   configuration don't affect *running* instances, so we will have to
-   force a new instance.
-2. Start an instance refresh. This will create a new instance, wait for
-   health checks to pass, and then terminate the old instance.
-   ```sh
-   aws autoscaling start-instance-refresh --auto-scaling-group-name=prod-asg
-   ```
+1. Run `terraform apply` in `terraform/`. This will pick up and apply the new
+   AMI ID from the `/clojars/production/ami_id` SSM parameter.
+2. Changes to a launch configuration don't affect *running* instances, so we will
+   have to force a new instance. You can do so by running 
+   `scripts/cycle-instance.sh`.
+   
 
 ## Ansible Guidelines
 
-* Follow Ansible [best practices](http://docs.ansible.com/ansible/playbooks_best_practices.html)
+* Follow Ansible [best
+  practices](http://docs.ansible.com/ansible/playbooks_best_practices.html)
 * Add an `{{ ansible_managed }}` comment in the header of all templates and files
 * Place any private files in `aws-ansible/private/`
 
