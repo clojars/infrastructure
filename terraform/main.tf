@@ -54,6 +54,7 @@ resource "aws_dynamodb_table" "tf_state_lock" {
 
 # user for server acccess to s3
 
+# TODO: remove this once we switch to using instance attached policies
 resource "aws_iam_user" "server_user" {
   name = "server-user"
 }
@@ -482,12 +483,84 @@ data "aws_ssm_parameter" "ami_id" {
   name = "/clojars/production/ami_id"
 }
 
+resource "aws_iam_policy" "s3_read_write" {
+  name = "S3ReadWrite"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = [
+          "s3:DeleteObject",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "ssm_parameter_read" {
+  name = "SSMParameterRead"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = [
+          "ssm:GetParameter"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role" "prod_server_role" {
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "prod_server_role_s3_access" {
+  role       = aws_iam_role.prod_server_role.name
+  policy_arn = aws_iam_policy.s3_read_write.arn
+}
+
+resource "aws_iam_role_policy_attachment" "prod_server_role_ssm_paramater_access" {
+  role       = aws_iam_role.prod_server_role.name
+  policy_arn = aws_iam_policy.ssm_parameter_read.arn
+}
+
+resource "aws_iam_instance_profile" "prod_server_profile" {
+  role = aws_iam_role.prod_server_role.name
+}
+
 resource "aws_launch_template" "prod_launch_template" {
   name_prefix     = "prod-asg-"
   # Release a new AMI with ../scripts/cycle-instance.sh after applying
   image_id        = nonsensitive(data.aws_ssm_parameter.ami_id.value)
   instance_type   = "t4g.medium"
   key_name        = "server-2022"
+
+  iam_instance_profile {
+    arn = aws_iam_instance_profile.prod_server_profile.arn
+  }
 
   network_interfaces {
     associate_public_ip_address = true
