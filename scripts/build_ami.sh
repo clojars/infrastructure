@@ -9,7 +9,11 @@ cd "${dir}/../ami"
 # Find the latest Amazon Linux 2 AMI
 BASE_AMI=$(aws ec2 describe-images --owners amazon --filters "Name=name,Values=amzn2-ami-hvm-*-arm64-gp2" --query 'sort_by(Images,&CreationDate)[-1].ImageId' --region "us-east-2" --output text)
 
-packer build -var source_ami_id="${BASE_AMI}" packer.json
+packer build \
+    -var aws_access_key="${AWS_ACCESS_KEY_ID}" \
+    -var aws_secret_key="${AWS_SECRET_ACCESS_KEY}" \
+    -var source_ami_id="${BASE_AMI}" \
+    packer.json.pkr.hcl
 
 # Find the newly created AMI
 NEW_AMI=$(aws ec2 describe-images --owners self --filters "Name=name,Values=clojars-server*" --query 'sort_by(Images,&CreationDate)[-1].ImageId' --region "us-east-2" --output text)
