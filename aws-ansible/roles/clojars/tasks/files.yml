@@ -83,12 +83,6 @@
     dest: /etc/sudoers.d/clojars_sudoers
     mode: 0644
     
-- name: Copy clojars production config
-  template:
-    src: production_config.edn.j2
-    dest: ~/data/conf/production_config.edn
-    mode: 0644
-
 - name: Create indexer folder
   file:
     path: ~/indexer
