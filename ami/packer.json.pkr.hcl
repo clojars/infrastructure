@@ -46,8 +46,21 @@ build {
     pause_after       = "2m"
   }
 
+  provisioner "shell" {
+    env = {
+      AWS_ACCESS_KEY_ID     = "${var.aws_access_key}"
+      AWS_SECRET_ACCESS_KEY = "${var.aws_secret_key}"
+    }
+
+    scripts = ["scripts/setup_ansible_vars.sh"]
+  }
+
   provisioner "ansible-local" {
     playbook_dir  = "../aws-ansible/"
     playbook_file = "../aws-ansible/base.yml"
+  }
+
+  provisioner "shell" {
+    inline = ["rm /tmp/clojars_vars.yml"]
   }
 }
