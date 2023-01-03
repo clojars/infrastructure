@@ -18,10 +18,6 @@ terraform, build an AMI, or deploy. You will also need to set
 `CLOJARS_SSH_KEY_FILE` to the path to the private key used by the
 server if you want to deploy or ssh in to the server.
 
-To apply the terraform, you will need two configuration vars set in
-your environment: `TF_VAR_db_password` and `TF_VAR_db_username`. Both
-of these values are available from `aws-ansible/private/vars.yml`.
-
 ### clojars-env script
 
 One way to have all those vars set is to create a wrapper script that
@@ -88,14 +84,33 @@ terraform apply
 You will need packer installed to be able to build AMIs:
 https://www.packer.io/downloads.html (currently using v1.5.4).
 
-## Private Vars
+## Sensitive Configuration Data
 
-There is some config for Clojars which is sensitive and cannot be
-publicly shared in the Github repo. This is placed in
-`aws-ansible/private/vars.yml`. For development purposes,
-`aws-ansible/private_vars.yml.example` is a vars file which looks like
-the real one but with sensitive information replaced. These vars are
-used by the ansible that builds the AMI.
+We store sensitive configuration data in [AWS SSM parameters](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html).
+
+the following parameters exist currently (ones marked with a 🔒 are encrypted):
+
+- `/clojars/production/ami_id`
+- `/clojars/production/cdn_token` 🔒
+- `/clojars/production/db_host`
+- `/clojars/production/db_password` 🔒
+- `/clojars/production/db_user` 🔒
+- `/clojars/production/github_oauth_client_id` 🔒
+- `/clojars/production/github_oauth_client_secret` 🔒
+- `/clojars/production/gitlab_oauth_client_id` 🔒
+- `/clojars/production/gitlab_oauth_client_secret` 🔒
+- `/clojars/production/sentry_dsn` 🔒
+- `/clojars/production/sentry_token` 🔒
+- `/clojars/production/ses_password` 🔒
+- `/clojars/production/ses_username` 🔒
+- `/clojars/production/ssh_keys`
+
+You can retrieve the value of a parameter with:
+
+``` sh
+aws ssm get-parameter --name <name> --query "Parameter.Value" --with-decryption
+```
+
 
 # Listing running instances
 
@@ -160,7 +175,6 @@ will be written to the `/clojars/production/ami_id` SSM parameter, which is read
 * Follow Ansible [best
   practices](http://docs.ansible.com/ansible/playbooks_best_practices.html)
 * Add an `{{ ansible_managed }}` comment in the header of all templates and files
-* Place any private files in `aws-ansible/private/`
 
 
 Distributed under the MIT License. See the file COPYING.
