@@ -101,12 +101,6 @@
 - name: copy bin scripts
   copy: src=bin-scripts/ dest=~/bin mode=0755
 
-- name: write environment file for script usage
-  template:
-    src: config_env.j2
-    dest: ~/bin/config_env
-    mode: 0644
-
 - name: Create www directory
   become: yes
   become_user: root
