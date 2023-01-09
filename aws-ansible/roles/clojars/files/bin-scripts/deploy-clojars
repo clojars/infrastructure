@@ -24,7 +24,7 @@ chmod +x /home/clojars/bin/*
 
 ln -sf "${releases}/clojars-web-${version}-standalone.jar" "${releases}/clojars-web-current.jar"
 
-SENTRY_TOKEN=$(aws ssm get-parameter --name "/clojars/production/sentry_token" --with-decryption --query "Parameter.Value")
+SENTRY_TOKEN=$(aws ssm get-parameter --name "/clojars/production/sentry_token" --with-decryption --query "Parameter.Value" | tr -d '"')
 
 curl -H "Authorization: Bearer ${SENTRY_TOKEN}" -H "Content-Type: application/json" -X POST -d "{\"version\":\"${version}\",\"ref\":\"${DEPLOY_USER}\"}" "https://app.getsentry.com/api/0/projects/clojars/clojars-web/releases/"
 
