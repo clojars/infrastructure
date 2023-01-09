@@ -45,6 +45,18 @@
     state: directory
     mode: 0700
 
+- name: Ensure ~/.aws directory exists
+  file:
+    path: ~/.aws
+    state: directory
+    mode: 0700
+
+- name: Copy aws config to set region
+  copy:
+    src: aws_config
+    dest: ~/.aws/config
+    mode: 0700
+
 - name: Copy Deploy-on-boot service template
   become: yes
   become_user: root
