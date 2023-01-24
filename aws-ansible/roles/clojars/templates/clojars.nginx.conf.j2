@@ -116,6 +116,8 @@ server {
   location @clojars_webapp {
     proxy_set_header Host $host;
     proxy_pass http://clojars-web;
+    # This rewrites Location headers to be https instead of http
+    proxy_redirect http: https:;
   }
 
   location /stats {
