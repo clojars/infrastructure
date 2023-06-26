@@ -116,6 +116,23 @@ resource "aws_iam_policy" "ssm_parameter_read" {
   })
 }
 
+resource "aws_iam_policy" "sqs_read_write" {
+  name = "SQSReadWrite"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "sqs:*"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
 resource "aws_iam_role" "prod_server_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -140,4 +157,9 @@ resource "aws_iam_role_policy_attachment" "prod_server_role_s3_access" {
 resource "aws_iam_role_policy_attachment" "prod_server_role_ssm_paramater_access" {
   role       = aws_iam_role.prod_server_role.name
   policy_arn = aws_iam_policy.ssm_parameter_read.arn
+}
+
+resource "aws_iam_role_policy_attachment" "prod_server_role_sqs_access" {
+  role       = aws_iam_role.prod_server_role.name
+  policy_arn = aws_iam_policy.sqs_read_write.arn
 }
