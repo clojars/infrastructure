@@ -1,5 +1,5 @@
 @startuml system_diagram
-!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/release/1-0/C4_Container.puml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 title Clojars System Diagram
 
@@ -18,6 +18,8 @@ System_Boundary(asg, "Auto-scaling Group") {
   ContainerDb(stats_bucket, "Stats S3 Bucket", "clojars-stats-production", "Stores download stat files.")
   ContainerDb(artifact_index_bucket, "Artifact Index S3 Bucket", "clojars-artifact-index", "Stores a cache of the artifact index.")
   ContainerDb(deployments_bucket, "Deployments S3 Bucket", "clojars-deployment-artifacts", "Stores deployments of the Clojars app.")
+
+  ContainerQueue(sqs, "Events queue (SQS)", "A queue for asynchronous tasks.")
 
   System_Ext(ses, "Outgoing E-Mail System (SES)", "Sends system notification emails.")
 }
@@ -41,10 +43,12 @@ Rel(instance, repo_bucket, "Reads artifact pom files from", "s3")
 Rel(instance, stats_bucket, "Writes download stat files to", "s3")
 Rel(instance, fastly, "Redirects artifact GETs to & Purges paths from", "https")
 Rel(instance, ses, "Sends emails via", "https")
+Rel(instance, sqs, "Emits events via", "sqs")
 Rel(instance, artifact_index_bucket, "Reads/writes artifact index on index update", "s3")
 Rel(instance, deployments_bucket, "Reads Clojars app zip on boot/deploy", "s3")
 
 Rel(ses, user, "Delivers system notification emails to", "smtp")
+Rel(sqs, instance, "Delivers events to", "sqs")
 
 Rel(fastly, repo_bucket, "Serves artifacts from", "https")
 Rel(fastly, stats_bucket, "Serves download stats from", "https")
