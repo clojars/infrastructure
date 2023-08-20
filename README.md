@@ -128,7 +128,13 @@ To deploy a new release of Clojars, you have a few options:
   running server switch to that release
 - You can also switch back to an older release
 
-To build and upload a new release, run:
+To build and upload a new release, first tag the release (in `clojars-web`):
+
+`make tag-release`
+
+This will create and push a tag of the form `<date>.<commit-count>` (example: `2023-08-20.1982`).
+
+Then run:
 
 `scripts/upload-release.sh <version-tag>`
 

@@ -32,11 +32,10 @@ if [[ $result -ne 0 ]]; then
   mv "clojars-web-${version}" clojars-web
   rm clojars-archive.zip
   cd clojars-web
-  # Including the production profile is a workaround for https://codeberg.org/leiningen/leiningen/issues/5
-  lein with-profile production uberjar
+  make uberjar
   
   # build zip of jar & scripts
-  mv "target/uberjar/clojars-web-${version}-standalone.jar" .
+  mv "target/clojars-web-standalone.jar" "./clojars-web-${version}-standalone.jar"
   zip $artifact *.jar scripts/*
   
   # upload to s3
