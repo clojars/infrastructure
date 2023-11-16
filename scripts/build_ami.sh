@@ -19,6 +19,6 @@ packer build \
 NEW_AMI=$(aws ec2 describe-images --owners self --filters "Name=name,Values=clojars-server*" --query 'sort_by(Images,&CreationDate)[-1].ImageId' --region "us-east-2" --output text)
 
 # Set ssm parameter with new amidi
-aws ssm put-parameter --name "/clojars/production/ami_id" --value $NEW_AMI --type String --overwrite
+aws ssm put-parameter --name "/clojars/production/ami_id" --value $NEW_AMI --type String --data-type "aws:ec2:image" --overwrite
 
 echo "New AMI (${NEW_AMI}) stored in '/clojars/production/ami_id'. Apply terraform and run ./scripts/cycle-instance.sh to use this new AMI."

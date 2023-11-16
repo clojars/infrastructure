@@ -1,7 +1,3 @@
-data "aws_ssm_parameter" "ami_id" {
-  name = "/clojars/production/ami_id"
-}
-
 locals {
   subnet_ids = [
     "subnet-bd40afd6", # us-east-2a
@@ -44,8 +40,10 @@ resource "aws_iam_instance_profile" "prod_server_profile" {
 
 resource "aws_launch_template" "prod_launch_template" {
   name_prefix     = "prod-asg-"
-  # Release a new AMI with ../scripts/cycle-instance.sh after applying
-  image_id        = nonsensitive(data.aws_ssm_parameter.ami_id.value)
+  # The AMI build process writes the AMI id to a SSM parameter. The next
+  # instance created will use the new AMI based on this resolve directive. You
+  # can trigger this with ../scripts/cycle-instance.sh
+  image_id        = "resolve:ssm:/clojars/production/ami_id"
   instance_type   = "t4g.medium"
   key_name        = "server-2022"
 
