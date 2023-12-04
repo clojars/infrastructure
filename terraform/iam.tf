@@ -133,6 +133,24 @@ resource "aws_iam_policy" "sqs_read_write" {
   })
 }
 
+resource "aws_iam_policy" "cw_agent" {
+  name = "CWAgent"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "cloudwatch:PutMetricData",
+          "ec2:DescribeTags"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
 resource "aws_iam_role" "prod_server_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -162,4 +180,9 @@ resource "aws_iam_role_policy_attachment" "prod_server_role_ssm_paramater_access
 resource "aws_iam_role_policy_attachment" "prod_server_role_sqs_access" {
   role       = aws_iam_role.prod_server_role.name
   policy_arn = aws_iam_policy.sqs_read_write.arn
+}
+
+resource "aws_iam_role_policy_attachment" "prod_server_role_cw_agent_access" {
+  role       = aws_iam_role.prod_server_role.name
+  policy_arn = aws_iam_policy.cw_agent.arn
 }
