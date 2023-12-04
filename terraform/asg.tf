@@ -4,6 +4,8 @@ locals {
     "subnet-d27c58a8", # us-east-2b
     "subnet-5cbf3310"  # us-east-2c
   ]
+
+  disk_usage_alarm_threshold = 80
 }
 
 resource "aws_security_group" "server_production" {
@@ -67,6 +69,10 @@ resource "aws_launch_template" "prod_launch_template" {
   lifecycle {
     create_before_destroy = true
   }
+
+  monitoring {
+    enabled = true
+  }
 }
 
 resource "aws_autoscaling_group" "prod_asg" {
@@ -90,4 +96,30 @@ resource "aws_autoscaling_group" "prod_asg" {
     "OldestInstance",
     "Default",
   ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "disk_usage_alarm" {
+  alarm_name        = "${aws_autoscaling_group.prod_asg.name} root disk usage too high"
+  alarm_description = "The root volume of ${aws_autoscaling_group.prod_asg.name} is > ${local.disk_usage_alarm_threshold}%"
+
+  metric_name = "disk_used_percent"
+  namespace   = "CWAgent"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.prod_asg.name
+    path                 = "/"
+  }
+
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  statistic           = "Maximum"
+  threshold           = local.disk_usage_alarm_threshold
+
+  evaluation_periods  = "1"
+  datapoints_to_alarm = "1"
+  period              = "60"
+  treat_missing_data  = "ignore"
+
+  actions_enabled = "true"
+  alarm_actions   = [aws_sns_topic.alarm_topic.arn]
+  ok_actions      = [aws_sns_topic.alarm_topic.arn]
 }
