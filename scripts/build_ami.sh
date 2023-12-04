@@ -21,4 +21,4 @@ NEW_AMI=$(aws ec2 describe-images --owners self --filters "Name=name,Values=cloj
 # Set ssm parameter with new amidi
 aws ssm put-parameter --name "/clojars/production/ami_id" --value $NEW_AMI --type String --data-type "aws:ec2:image" --overwrite
 
-echo "New AMI (${NEW_AMI}) stored in '/clojars/production/ami_id'. Apply terraform and run ./scripts/cycle-instance.sh to use this new AMI."
+echo "New AMI (${NEW_AMI}) stored in '/clojars/production/ami_id'. Run ./scripts/cycle-instance.sh to use this new AMI."
