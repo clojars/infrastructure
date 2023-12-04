@@ -25,7 +25,7 @@
     name: '*'
     state: latest
 
-- name: Install  packages
+- name: Install packages
   yum:
     name: "{{ al2_packages }}"
     state: latest
@@ -40,3 +40,19 @@
     key: "{{ item }}"
     state: present
   loop: "{{ ssh_keys }}"
+
+- name: Copy cloudwatch-agent config
+  become: yes
+  become_user: root
+  template:
+    src: cloudwatch-agent-config.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.d/config.json
+    mode: 0644
+
+- name: Ensure cloudwatch-agent is enabled
+  become: yes
+  become_user: root
+  service:
+    name: amazon-cloudwatch-agent
+    state: started
+    enabled: yes
