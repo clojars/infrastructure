@@ -7,8 +7,8 @@ data "aws_ssm_parameter" "db_username" {
 }
 
 resource "aws_security_group" "allow_postgres" {
-  name        = "allow_postgres"
-  description = "Allow access tp postgres server" # typo, but can't be changed w/o recreating RDS resource!
+  name        = "allow_postgres2"
+  description = "Allow access to postgres server"
 
   ingress {
     from_port       = 5432
@@ -25,12 +25,13 @@ resource "aws_security_group" "allow_postgres" {
   }
 }
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "production" {
   allocated_storage            = 20
   backup_retention_period      = 7
   engine                       = "postgres"
-  identifier                   = "clojars-production"
-  instance_class               = "db.t3.small"
+  engine_version               = "15.5"
+  identifier                   = "clojars-production2"
+  instance_class               = "db.t4g.small"
   db_name                      = "clojars"
   password                     = data.aws_ssm_parameter.db_password.value
   publicly_accessible          = true
