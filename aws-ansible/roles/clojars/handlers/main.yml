@@ -2,7 +2,7 @@
 - name: restart clojars
   service:
     name: clojars
-    state: xrestarted
+    state: restarted
   become: yes
   become_user: root
 

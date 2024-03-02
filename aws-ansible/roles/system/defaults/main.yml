@@ -1,11 +1,9 @@
-al2_packages:
+al2023_packages:
   - amazon-cloudwatch-agent
+  - cronie
   - htop
-  - mosh
   - nginx
-  - ntp
-  - postgresql
+  - postgresql15
   - tmux
   - tree
   - vim
-  - zile

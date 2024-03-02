@@ -5,26 +5,25 @@ set -euo pipefail
 # Update package index.  Yum check-update returns 100 if there are packages
 # to update.
 set +e
-yum check-update
+dnf check-update
 if [ $? -eq 1 ]
 then
-    echo "yum check-update failed."
+    echo "dnf check-update failed."
     exit 1
 fi
 set -e
 
 # Install core packages
-yum install --assumeyes \
+dnf install --assumeyes \
     wget \
     unzip \
     libffi-devel \
     glibc \
-    gcc
+    gcc \
+    python3-pip
 
 # Install Ansible
-curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py
-python get-pip.py
-pip install ansible==2.9.4
+pip install ansible==8.7.0 lxml==5.1.0
 
 # Reboot
 echo "Rebooting."

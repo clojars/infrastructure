@@ -16,5 +16,5 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 "$dir/upload-release.sh" $version
 
-ssh -i $CLOJARS_SSH_KEY_FILE "ec2-user@${host}" sudo -u clojars /home/clojars/bin/deploy-clojars 
 
+ssh "ec2-user@${host}" sudo -u clojars /home/clojars/bin/deploy-clojars
