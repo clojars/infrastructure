@@ -50,6 +50,7 @@ export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
 export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
+PATH_add bin
 ```
 
 Install direnv and run `direnv allow` in the repo directory. Now, 
@@ -58,15 +59,14 @@ will be set.
 
 ## Terraform
 
-You will need terraform installed to be able to apply changes to the
-infrastructure: https://www.terraform.io/downloads.html (currently
-using v0.14.2).
+We have a wrapper around terraform (`bin/terraform`) that will download 
+and install the correct version (cached in `bin/.cache/`).
 
 ### Initialization
 
-The terraform state is stored in S3 and uses a DynamoDB table to lock
-that state when it is being altered. On first run, you will need to
-initialize terraform with:
+The terraform state is stored in S3 and uses a DynamoDB table to lock that state
+when it is being altered. On first run, you will need to initialize terraform
+with (this assumes you have set up `direnv` as above to use `bin/terraform`):
 
 ```sh
 cd terraform
@@ -81,8 +81,8 @@ terraform apply
 
 ## Packer
 
-You will need packer installed to be able to build AMIs:
-https://www.packer.io/downloads.html (currently using v1.5.4).
+We have a wrapper around packer (`bin/packer`) that will download and install
+the correct version (cached in `bin/.cache/`).
 
 ## Sensitive Configuration Data
 
@@ -159,8 +159,9 @@ Clojars AMI boots.
 
 # Building an AMI
 
-We build a custom AMI using packer, and apply changes to the AMI with
-ansible. To run packer, call:
+We build a custom AMI using packer, and apply changes to the AMI with ansible.
+To run packer, call (this assumes you have set up `direnv` as above to use
+`bin/packer`):
 
 `scripts/build_ami.sh`
 

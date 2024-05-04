@@ -1,4 +1,5 @@
 aws-ansible/private/*
+bin/.cache/
 *.pyc
 .idea/
 .envrc
