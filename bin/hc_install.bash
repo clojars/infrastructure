@@ -26,7 +26,7 @@ function ensure_hc_tool() {
 
     if ! [ -f "$DIR/.cache/${CACHE_DIR}/BOOTSTRAPPED" ]; then
         echo "Missing ${TOOL} binary for version [${VERSION}] -- will download." >&2
-        PACKAGE_FULL_URL="https://releases.hashicorp.com/${TOOL}/${VERSION/}/${ARCHIVE}"
+        PACKAGE_FULL_URL="https://releases.hashicorp.com/${TOOL}/${VERSION}/${ARCHIVE}"
         mkdir -p "$DIR/.cache"
         pushd "$DIR/.cache" >/dev/null 2>&1 || exit 1
         echo "Downloading ${PACKAGE_FULL_URL}..." >&2
