@@ -28,7 +28,7 @@ Container(fastly, "Repo/stats CDN", "Fastly", "repo.clojars.org")
 
 Rel(admin, deployments_bucket, "Uploads Clojars app release zips to", "s3")
 Rel(admin, instance, "Triggers deployment on", "ssh")
-Rel(admin, instance, "Connects to an adminstrative REPL on", "ssh")
+Rel(admin, instance, "Connects to an administrative REPL on", "ssh")
 
 Rel(user, lb, "Loads web-ui from", "https")
 Rel(user, lb, "Deploys artifacts to", "https")
