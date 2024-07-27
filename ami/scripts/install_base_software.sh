@@ -15,6 +15,7 @@ set -e
 
 # Install core packages
 dnf install --assumeyes \
+    acl \
     wget \
     unzip \
     libffi-devel \
@@ -24,8 +25,3 @@ dnf install --assumeyes \
 
 # Install Ansible
 pip install ansible==8.7.0 lxml==5.1.0
-
-# Reboot
-echo "Rebooting."
-nohup reboot < /dev/null > /dev/null 2>&1 &
-exit 0

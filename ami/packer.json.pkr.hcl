@@ -43,7 +43,6 @@ build {
     expect_disconnect = "true"
     scripts           = ["scripts/install_base_software.sh"]
     skip_clean        = "true"
-    pause_after       = "2m"
   }
 
   provisioner "shell" {
