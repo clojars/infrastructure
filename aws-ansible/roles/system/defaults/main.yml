@@ -1,5 +1,6 @@
 al2023_packages:
   - amazon-cloudwatch-agent
+  - bind-utils
   - cronie
   - htop
   - nginx
