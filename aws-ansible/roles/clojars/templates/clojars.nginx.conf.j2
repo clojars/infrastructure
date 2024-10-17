@@ -53,10 +53,15 @@ server {
     autoindex on;
     expires 1w;
     log_not_found off;
-    client_max_body_size 20m;
+    client_max_body_size 30m;
     limit_except GET HEAD {
       # send uploads to webapp
       proxy_pass http://clojars-web;
+    }
+
+    if ($request_method ~ "GET|HEAD") {
+      rewrite ^/repo$ https://repo.clojars.org redirect;
+      rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
     }
 
     # nested location blocks inherit the above settings except for proxy_pass
@@ -87,10 +92,7 @@ server {
        }
     }
 
-    if ($request_method ~ "GET|HEAD") {
-      rewrite ^/repo$ https://repo.clojars.org redirect;
-      rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
-    }
+
   }
 
   location /login {
