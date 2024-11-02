@@ -104,8 +104,6 @@ server {
           rewrite ^/repo/(.*)$ https://repo.clojars.org/$1 redirect;
        }
     }
-
-
   }
 
   location /login {
@@ -138,6 +136,10 @@ server {
   location /stats {
     rewrite ^/stats$ https://repo.clojars.org/stats/ redirect;
     rewrite ^/stats/(.*)$ https://repo.clojars.org/stats/$1 redirect;
+  }
+
+ location ~ ^/sitemap(-[0-9]+|)\.xml(\.md5|\.sha1|)$ {
+    rewrite ^(.*)$ https://repo.clojars.org/stats/sitemap$1 redirect;
   }
 
   location = /robots.txt { root /var/www/clojars; }
