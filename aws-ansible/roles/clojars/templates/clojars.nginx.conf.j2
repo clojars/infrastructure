@@ -138,8 +138,9 @@ server {
     rewrite ^/stats/(.*)$ https://repo.clojars.org/stats/$1 redirect;
   }
 
- location ~ ^/sitemap(-[0-9]+|)\.xml(\.md5|\.sha1|)$ {
-    rewrite ^(.*)$ https://repo.clojars.org/stats/sitemap$1 redirect;
+  location ~ ^/sitemap(-[0-9]+|)\.xml(\.md5|\.sha1|)$ {
+    rewrite ^(.*)$ /stats/sitemap$1 break;
+    proxy_pass http://repo.clojars.org;
   }
 
   location = /robots.txt { root /var/www/clojars; }
