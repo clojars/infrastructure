@@ -11,6 +11,7 @@ WorkingDirectory=/home/clojars
 ExecStart=/bin/java -Dnla.node=clojars -Dlog.level=INFO -Dlog.dir=/var/log/clojars \
   -Daws.region=us-east-2 \
   -Xmx1024m \
+  -Xms1024m \
   -XX:+HeapDumpOnOutOfMemoryError \
   -XX:+ExitOnOutOfMemoryError \
   -cp releases/clojars-web-current.jar clojars.main
