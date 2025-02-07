@@ -46,7 +46,8 @@ resource "aws_launch_template" "prod_launch_template" {
   # instance created will use the new AMI based on this resolve directive. You
   # can trigger this with ../scripts/cycle-instance.sh
   image_id        = "resolve:ssm:/clojars/production/ami_id"
-  instance_type   = "t4g.medium"
+  # 8.0 GiB / 2 vCPUs / Up to 12.5 Gigabit / $0.0898 hourly
+  instance_type   = "m6g.large"
   key_name        = "server-2022"
 
   iam_instance_profile {
