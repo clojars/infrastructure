@@ -142,7 +142,8 @@ resource "aws_iam_policy" "cw_agent" {
       {
         Action = [
           "cloudwatch:PutMetricData",
-          "ec2:DescribeTags"
+          "ec2:DescribeTags",
+          "logs:PutLogEvents"
         ]
         Effect   = "Allow"
         Resource = "*"
