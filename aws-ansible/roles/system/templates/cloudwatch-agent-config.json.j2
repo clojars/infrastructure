@@ -12,6 +12,25 @@
       ["AutoScalingGroupName", "path"]
     ],
     "metrics_collected": {
+      "jmx": [
+        {
+          "endpoint": "localhost:4111",
+          "jvm": {
+            "measurement": [
+              "jvm.classes.loaded",
+              "jvm.gc.collections.count",
+              "jvm.gc.collections.elapsed",
+              "jvm.memory.heap.committed",
+              "jvm.memory.heap.max",
+              "jvm.memory.heap.used",
+              "jvm.memory.nonheap.committed",
+              "jvm.memory.nonheap.max",
+              "jvm.memory.nonheap.used",
+              "jvm.threads.count"
+            ]
+          }
+        }
+      ],
       "disk": {
         "measurement": [
           "used_percent"
