@@ -63,7 +63,7 @@ resource "aws_launch_template" "prod_launch_template" {
     device_name = "/dev/xvda"
 
     ebs {
-      volume_size = 30
+      volume_size = 40
     }
   }
 
