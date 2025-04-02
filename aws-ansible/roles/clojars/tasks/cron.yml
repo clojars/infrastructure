@@ -41,20 +41,10 @@
     hour: "1"
     job: "~/bin/update-stats ~/releases/clojars-web-current.jar"
 
-- name: Set tmp upload dirs cleanup job
-  become: true
-  cron:
-    name: "Cleanup old upload dirs"
-    user: "clojars"
-    minute: "0"
-    hour: "1"
-    job: "find /tmp -name 'upload-*' -type d -mtime +3 -exec rm -rf {} +"
-
 - name: Set app-user local tmp cleanup job
   become: true
   cron:
-    name: "Cleanup old local tmp files"
+    name: "Cleanup old local tmp files older than 2 days every hour"
     user: "clojars"
     minute: "0"
-    hour: "1"
-    job: "find ~/tmp -type f -mtime +3 -exec rm {} +"
+    job: "find ~/tmp -mtime +2 -exec rm -rf {} +"
