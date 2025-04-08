@@ -6,6 +6,7 @@ locals {
   ]
 
   disk_usage_alarm_threshold = 80
+  cpu_usage_alarm_threshold = 80
 }
 
 resource "aws_security_group" "server_production" {
@@ -127,10 +128,35 @@ resource "aws_cloudwatch_metric_alarm" "disk_usage_alarm" {
   statistic           = "Maximum"
   threshold           = local.disk_usage_alarm_threshold
 
-  evaluation_periods  = "1"
-  datapoints_to_alarm = "1"
-  period              = "60"
+  evaluation_periods  = 1
+  datapoints_to_alarm = 1
+  period              = 60
   treat_missing_data  = "ignore"
+
+  actions_enabled = "true"
+  alarm_actions   = [aws_sns_topic.alarm_topic.arn]
+  ok_actions      = [aws_sns_topic.alarm_topic.arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
+  alarm_name        = "${aws_autoscaling_group.prod_asg.name} CPU usage too high"
+  alarm_description = "The CPU utilization ${aws_autoscaling_group.prod_asg.name} is > ${local.cpu_usage_alarm_threshold}%"
+
+  metric_name = "CPUUtilization"
+  namespace   = "AWS/EC2"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.prod_asg.name
+  }
+
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  statistic           = "Average"
+  threshold           = local.cpu_usage_alarm_threshold
+
+  evaluation_periods  = 10
+  datapoints_to_alarm = 8
+  period              = 60
+  treat_missing_data  = "missing"
 
   actions_enabled = "true"
   alarm_actions   = [aws_sns_topic.alarm_topic.arn]
