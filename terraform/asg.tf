@@ -6,7 +6,7 @@ locals {
   ]
 
   disk_usage_alarm_threshold = 80
-  cpu_usage_alarm_threshold = 80
+  cpu_usage_alarm_threshold = 90
 }
 
 resource "aws_security_group" "server_production" {
