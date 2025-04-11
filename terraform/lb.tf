@@ -63,9 +63,11 @@ resource "aws_lb" "production" {
 
   enable_deletion_protection = true
 
+  // Note: this only enables access logging, not connection logging. Enable
+  // connection logging via the console if you want to debug TLS connection
+  // issues.
   # access_logs {
   #   bucket  = aws_s3_bucket.lb_logs_bucket.bucket
-  #   prefix  = "production-lb"
   #   enabled = true
   # }
 }
