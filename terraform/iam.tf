@@ -85,7 +85,7 @@ resource "aws_iam_policy" "s3_read_write" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = [
+        Action = [
           "s3:DeleteObject",
           "s3:GetObject",
           "s3:PutObject",
@@ -106,7 +106,7 @@ resource "aws_iam_policy" "ssm_parameter_read" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = [
+        Action = [
           "ssm:GetParameter"
         ]
         Effect   = "Allow"

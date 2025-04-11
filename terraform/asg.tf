@@ -1,6 +1,6 @@
 locals {
   disk_usage_alarm_threshold = 80
-  cpu_usage_alarm_threshold = 90
+  cpu_usage_alarm_threshold  = 90
 }
 
 resource "aws_security_group" "server_production" {
@@ -36,14 +36,14 @@ resource "aws_iam_instance_profile" "prod_server_profile" {
 }
 
 resource "aws_launch_template" "prod_launch_template" {
-  name_prefix     = "prod-asg-"
+  name_prefix = "prod-asg-"
   # The AMI build process writes the AMI id to a SSM parameter. The next
   # instance created will use the new AMI based on this resolve directive. You
   # can trigger this with ../scripts/cycle-instance.sh
-  image_id        = "resolve:ssm:/clojars/production/ami_id"
+  image_id = "resolve:ssm:/clojars/production/ami_id"
   # 8.0 GiB / 2 vCPUs / Up to 12.5 Gigabit / $0.0898 hourly
-  instance_type   = "m6g.large"
-  key_name        = "server-2022"
+  instance_type = "m6g.large"
+  key_name      = "server-2022"
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.prod_server_profile.arn
