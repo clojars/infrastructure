@@ -1,10 +1,4 @@
 locals {
-  subnet_ids = [
-    "subnet-bd40afd6", # us-east-2a
-    "subnet-d27c58a8", # us-east-2b
-    "subnet-5cbf3310"  # us-east-2c
-  ]
-
   disk_usage_alarm_threshold = 80
   cpu_usage_alarm_threshold = 90
 }
