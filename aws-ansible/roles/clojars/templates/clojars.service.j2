@@ -14,8 +14,8 @@ ExecStart=/bin/java -Dnla.node=clojars -Dlog.level=INFO -Dlog.dir=/var/log/cloja
   -Dcom.sun.management.jmxremote.port=4111 \
   -Dcom.sun.management.jmxremote.authenticate=false \
   -Dcom.sun.management.jmxremote.ssl=false \
-  -Xmx1024m \
-  -Xms1024m \
+  -Xmx2g \
+  -Xms2g \
   -XX:+HeapDumpOnOutOfMemoryError \
   -XX:+ExitOnOutOfMemoryError \
   -cp releases/clojars-web-current.jar clojars.main
