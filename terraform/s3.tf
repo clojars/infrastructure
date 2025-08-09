@@ -56,6 +56,13 @@ resource "aws_s3_bucket" "production_repo_bucket" {
   bucket = "clojars-repo-production"
 }
 
+resource "aws_s3_bucket_versioning" "production_repo_bucket" {
+  bucket = aws_s3_bucket.production_repo_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_acl" "production_repo_bucket" {
   bucket = aws_s3_bucket.production_repo_bucket.id
   acl    = "public-read"
@@ -69,6 +76,54 @@ resource "aws_s3_bucket_cors_configuration" "production_repo_bucket" {
     allowed_methods = ["GET"]
     allowed_origins = ["*"]
   }
+}
+
+resource "aws_iam_role" "repo_backup" {
+  name = "repo-backup-role"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "backup.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "backup_policy" {
+  role       = aws_iam_role.repo_backup.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+}
+
+resource "aws_backup_vault" "repo_backup_vault" {
+  name = "repo-backup-vault"
+}
+
+resource "aws_backup_plan" "repo_backup_plan" {
+  name = "repo-backup-plan"
+
+  rule {
+    rule_name                = "continuous-backup"
+    target_vault_name        = aws_backup_vault.repo_backup_vault.name
+    enable_continuous_backup = true
+    schedule                 = "cron(0 5 ? * * *)"
+    start_window             = 60
+    completion_window        = 180
+
+    lifecycle {
+      delete_after = 35
+    }
+  }
+}
+
+resource "aws_backup_selection" "repo_bucket" {
+  name         = "repo-bucket-selection"
+  plan_id      = aws_backup_plan.repo_backup_plan.id
+  iam_role_arn = aws_iam_role.repo_backup.arn
+  resources    = [aws_s3_bucket.production_repo_bucket.arn]
 }
 
 # stats bucket
