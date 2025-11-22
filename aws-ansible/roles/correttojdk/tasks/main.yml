@@ -8,8 +8,8 @@
   become: yes
   args:
     creates: /etc/yum.repos.d/corretto.repo
-- name: install corretto 21
+- name: install corretto 25
   become: yes
   dnf:
-    name: java-21-amazon-corretto-headless
+    name: java-25-amazon-corretto-headless
     state: latest
