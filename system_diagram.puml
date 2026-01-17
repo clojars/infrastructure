@@ -17,6 +17,7 @@ System_Boundary(asg, "Auto-scaling Group") {
   ContainerDb(repo_bucket, "Artifact S3 Bucket", "clojars-repo-production", "Stores all artifacts.")
   ContainerDb(stats_bucket, "Stats S3 Bucket", "clojars-stats-production", "Stores download stat files.")
   ContainerDb(artifact_index_bucket, "Artifact Index S3 Bucket", "clojars-artifact-index", "Stores a cache of the artifact index.")
+  ContainerDb(maven_index_bucket, "Maven Index S3 Bucket", "clojars-artifact-index", "Stores the maven index.")
   ContainerDb(deployments_bucket, "Deployments S3 Bucket", "clojars-deployment-artifacts", "Stores deployments of the Clojars app.")
 
   ContainerQueue(sqs, "Events queue (SQS)", "A queue for asynchronous tasks.")
@@ -41,6 +42,7 @@ Rel(instance, database, "Uses", "sql")
 Rel(instance, repo_bucket, "Writes artifacts to", "s3")
 Rel(instance, repo_bucket, "Reads artifact pom files from", "s3")
 Rel(instance, stats_bucket, "Writes download stat files to", "s3")
+Rel(instance, maven_index_bucket, "Writes maven index shards to", "s3")
 Rel(instance, fastly, "Redirects artifact GETs to & Purges paths from", "https")
 Rel(instance, ses, "Sends emails via", "https")
 Rel(instance, sqs, "Emits events via", "sqs")
@@ -52,5 +54,6 @@ Rel(sqs, instance, "Delivers events to", "sqs")
 
 Rel(fastly, repo_bucket, "Serves artifacts from", "https")
 Rel(fastly, stats_bucket, "Serves download stats from", "https")
+Rel(fastly, maven_index_bucket, "Serves maven index files from", "https")
 Rel(fastly, lb, "Proxies artifact deploys to", "https")
 @enduml

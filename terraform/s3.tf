@@ -30,6 +30,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "fastly_logs_bucket" {
   }
 }
 
+# maven index bucket
+
+resource "aws_s3_bucket" "production_maven_index_bucket" {
+  bucket = "clojars-maven-index-production"
+}
+
+resource "aws_s3_bucket_acl" "production_maven_index_bucket" {
+  bucket = aws_s3_bucket.production_maven_index_bucket.id
+  acl    = "public-read"
+}
 
 # repo buckets
 
