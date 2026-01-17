@@ -25,11 +25,11 @@
   become_user: clojars
   maven_artifact:
     group_id: org.apache.maven.indexer
-    artifact_id: "indexer-core"
+    artifact_id: "indexer-cli"
     version: "{{ indexer_version }}"
     classifier: cli
     repository_url: "https://repo1.maven.org/maven2"
-    dest: "~/indexer/indexer-core-{{ indexer_version }}-cli.jar"
+    dest: "~/indexer/indexer-cli-{{ indexer_version }}-cli.jar"
 
 - include: nginx.yml
   become: yes
