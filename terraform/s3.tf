@@ -168,6 +168,16 @@ resource "aws_s3_bucket_acl" "artifact_index_bucket" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_cors_configuration" "artifact_index_bucket" {
+  bucket = aws_s3_bucket.artifact_index_bucket.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+  }
+}
+
 # load balancer logs
 
 resource "aws_s3_bucket" "lb_logs_bucket" {
