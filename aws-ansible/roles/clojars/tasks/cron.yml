@@ -12,7 +12,7 @@
     user: "clojars"
     minute: "5"
     hour: "*/4"
-    job: "~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/indexer/index-{{ indexer_version }} ~/repo"
+    job: "~/bin/maven-index-repo ~/releases/clojars-web-current.jar ~/indexer/indexer-core-{{ indexer_version }}-cli.jar ~/repo"
 
 
 - name: Set rebuild search index cron job
