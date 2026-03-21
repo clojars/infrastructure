@@ -48,6 +48,11 @@ server {
     return 451;
   }
 
+  #####
+  # NOTE: if you increase/add any client_max_body_size > the current maximum,
+  # adjust :max-body in clojars-web/src/clojars/http_kit.clj accordingly.
+  #####
+
   location /repo {
     root /home/clojars;
     autoindex on;
