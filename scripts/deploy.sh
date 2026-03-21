@@ -3,18 +3,19 @@
 
 set -euo pipefail
 
-usage() { echo "Usage: $0 host version" 1>&2; exit 1; }
+usage() { echo "Usage: $0 version" 1>&2; exit 1; }
 
-host=$1
-version=$2
+version=$1
 
-if [ -z "$host" ] || [ -z "$version" ]; then
+if [ -z "$version" ]; then
   usage
 fi
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-"$dir/upload-release.sh" $version
+host=$("$dir/select-instance.sh")
+[ $? -eq 0 ] || exit 1
 
+"$dir/upload-release.sh" $version
 
 ssh "ec2-user@${host}" sudo -u clojars /home/clojars/bin/deploy-clojars
