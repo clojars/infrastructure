@@ -9,6 +9,8 @@ cd "${dir}/../ami"
 # Find the latest Amazon Linux 2 AMI
 BASE_AMI=$(aws ec2 describe-images --owners amazon --filters "Name=name,Values=al2023-ami-2023*-arm64" --query 'sort_by(Images,&CreationDate)[-1].ImageId' --region "us-east-2" --output text)
 
+packer init packer.json.pkr.hcl
+
 packer build \
     -var aws_access_key="${AWS_ACCESS_KEY_ID}" \
     -var aws_secret_key="${AWS_SECRET_ACCESS_KEY}" \

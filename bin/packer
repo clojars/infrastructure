@@ -5,7 +5,7 @@ set -euo pipefail
 
 DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-TOOL_VERSION="1.8.2"
+TOOL_VERSION="1.15.1"
 TOOL=packer
 
 source "$DIR/hc_install.bash"

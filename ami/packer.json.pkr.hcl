@@ -1,3 +1,16 @@
+packer {
+  required_plugins {
+    amazon = {
+      source  = "github.com/hashicorp/amazon"
+      version = "~> 1"
+    }
+    ansible = {
+      source  = "github.com/hashicorp/ansible"
+      version = "~> 1"
+    }
+  }
+}
+
 variable "aws_access_key" {
   type      = string
   sensitive = true
