@@ -187,3 +187,98 @@ resource "aws_iam_role_policy_attachment" "prod_server_role_cw_agent_access" {
   role       = aws_iam_role.prod_server_role.name
   policy_arn = aws_iam_policy.cw_agent.arn
 }
+
+# Group for Clojars maintainers (humans). Members are managed outside Terraform.
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_iam_group" "clojars_devs" {
+  name = "ClojarsDevs"
+}
+
+resource "aws_iam_policy" "clojars_devs" {
+  name        = "ClojarsDevs"
+  description = "Day-to-day permissions for Clojars maintainers"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "CoreServices"
+        Effect = "Allow"
+        Action = [
+          "acm:*",
+          "autoscaling:*",
+          "backup:*",
+          "cloudwatch:*",
+          "dynamodb:*",
+          "ec2:*",
+          "elasticloadbalancing:*",
+          "iam:*",
+          "logs:*",
+          "rds:*",
+          "route53:*",
+          "s3:*",
+          "ses:*",
+          "sns:*",
+          "sqs:*",
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "SsmParameters"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParameterHistory",
+          "ssm:GetParametersByPath",
+          "ssm:PutParameter",
+        ]
+        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/*"
+      },
+      {
+        Sid      = "SsmDescribe"
+        Effect   = "Allow"
+        Action   = "ssm:DescribeParameters"
+        Resource = "*"
+      },
+      {
+        Sid    = "Billing"
+        Effect = "Allow"
+        Action = [
+          "account:*",
+          "aws-portal:*",
+          "bcm-data-exports:*",
+          "bcm-pricing-calculator:*",
+          "billing:*",
+          "budgets:*",
+          "ce:*",
+          "consolidatedbilling:*",
+          "cur:*",
+          "freetier:*",
+          "invoicing:*",
+          "payments:*",
+          "purchase-orders:*",
+          "tax:*",
+        ]
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_group_policy_attachment" "clojars_devs" {
+  group      = aws_iam_group.clojars_devs.name
+  policy_arn = aws_iam_policy.clojars_devs.arn
+}
+
+resource "aws_iam_group_policy_attachments_exclusive" "clojars_devs" {
+  group_name  = aws_iam_group.clojars_devs.name
+  policy_arns = [aws_iam_policy.clojars_devs.arn]
+}
+
+resource "aws_iam_group_policies_exclusive" "clojars_devs" {
+  group_name   = aws_iam_group.clojars_devs.name
+  policy_names = []
+}
