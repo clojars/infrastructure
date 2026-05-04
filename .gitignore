@@ -3,3 +3,4 @@ bin/.cache/
 *.pyc
 .idea/
 .envrc
+.claude/settings.local.json
