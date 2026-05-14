@@ -218,6 +218,7 @@ resource "aws_iam_policy" "clojars_devs" {
           "logs:*",
           "rds:*",
           "route53:*",
+          "route53domains:*",
           "s3:*",
           "ses:*",
           "sns:*",
