@@ -153,6 +153,7 @@ resource "dnsimple_zone_record" "repo" {
   type      = "CNAME"
   # https://www.fastly.com/documentation/guides/full-site-delivery/domains-and-origins/enabling-dualstack-connections/
   value = "dualstack.v.ssl.global.fastly.net"
+  # TODO: set this back to 3600 after 2026-05-21
   ttl   = 60
 }
 
