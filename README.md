@@ -87,11 +87,15 @@ cd terraform
 terraform apply
 ```
 
-### DNS records (DNSimple)
+### DNS records (DNSimple + Route 53)
 
-DNS for `clojars.org` and `clojars.net` is hosted at DNSimple and managed
-via Terraform in `terraform/dns.tf`. Make DNS changes by editing that
-file and running `terraform apply` — not in the DNSimple dashboard.
+DNS for `clojars.org` and `clojars.net` is served by two authoritative
+providers in parallel: **DNSimple** and **AWS Route 53**.
+
+Both zones are managed by Terraform in `terraform/dns.tf`, and each record is
+declared once via the `./modules/dns-record` module — applying writes the same
+record to both providers in lockstep. Make DNS changes by editing `dns.tf`
+and running `terraform apply` — not in either provider's dashboard.
 
 ## Packer
 
