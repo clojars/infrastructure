@@ -30,6 +30,8 @@ export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
 export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
+export DNSIMPLE_TOKEN=dnsimple-api-v2-token
+export DNSIMPLE_ACCOUNT=12345
 
 exec $@
 ```
@@ -50,8 +52,14 @@ export AWS_ACCESS_KEY_ID=ASDFASDFASDF
 export AWS_SECRET_ACCESS_KEY=3ASD3434AA
 export AWS_REGION=us-east-2
 export CLOJARS_SSH_KEY_FILE=~/.ssh/clojars-server.pem
+export DNSIMPLE_TOKEN=dnsimple-api-v2-token
+export DNSIMPLE_ACCOUNT=12345
 PATH_add bin
 ```
+
+`DNSIMPLE_TOKEN` is a v2 API token generated from
+<https://dnsimple.com/user> → "Access tokens". `DNSIMPLE_ACCOUNT` is the
+numeric account ID (visible in the DNSimple URL when signed in).
 
 Install direnv and run `direnv allow` in the repo directory. Now, 
 everytime you cd into the repo directory, the environment variables 
@@ -78,6 +86,12 @@ terraform init
 cd terraform
 terraform apply
 ```
+
+### DNS records (DNSimple)
+
+DNS for `clojars.org` and `clojars.net` is hosted at DNSimple and managed
+via Terraform in `terraform/dns.tf`. Make DNS changes by editing that
+file and running `terraform apply` — not in the DNSimple dashboard.
 
 ## Packer
 

@@ -2,6 +2,10 @@ provider "aws" {
   region = "us-east-2"
 }
 
+# Auth via env vars: DNSIMPLE_TOKEN (API v2 user token) and DNSIMPLE_ACCOUNT.
+provider "dnsimple" {
+}
+
 terraform {
   backend "s3" {
     bucket         = "clojars-tf-state"
