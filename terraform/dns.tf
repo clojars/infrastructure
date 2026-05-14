@@ -25,6 +25,98 @@ output "route53_clojars_net_nameservers" {
   description = "Add these to the clojars.net NS records at the registrar (alongside DNSimple's)."
 }
 
+# === Apex NS records ===
+#
+# Multi-provider DNS: the in-zone NS RRset on each authoritative server should
+# match the registrar's delegation, otherwise resolvers that cache the in-zone
+# answer (per RFC 2181 §5.4.1) only learn one provider's servers and the
+# redundancy is defeated. Registrar delegation is 4 DNSimple + 4 Route 53.
+#
+# We can only set the Route 53 side from Terraform today. DNSimple has an API
+# and UI for editing the zone-side NS RRset
+# (PUT /v2/{account}/zones/{zone}/ns_records), but the Terraform provider
+# doesn't expose it yet — tracking in
+# https://github.com/dnsimple/terraform-provider-dnsimple/issues/356. Once
+# that ships, mirror the same RRset on the DNSimple side.
+
+locals {
+  dnsimple_apex_ns = [
+    "ns1.dnsimple.com",
+    "ns2.dnsimple.com",
+    "ns3.dnsimple.com",
+    "ns4.dnsimple.com",
+  ]
+
+  clojars_net_apex_ns = concat(
+    local.dnsimple_apex_ns,
+    aws_route53_zone.clojars_net.name_servers,
+  )
+}
+
+resource "aws_route53_record" "net_apex_ns" {
+  zone_id         = aws_route53_zone.clojars_net.zone_id
+  name            = local.clojars_net_zone
+  type            = "NS"
+  ttl             = 3600
+  records         = local.clojars_net_apex_ns
+  allow_overwrite = true
+}
+
+# clojars.org — ready but not applied yet. Uncomment after clojars.net is
+# verified healthy.
+#
+# locals {
+#   clojars_org_apex_ns = concat(
+#     local.dnsimple_apex_ns,
+#     aws_route53_zone.clojars_org.name_servers,
+#   )
+# }
+#
+# resource "aws_route53_record" "org_apex_ns" {
+#   zone_id         = aws_route53_zone.clojars_org.zone_id
+#   name            = local.clojars_zone
+#   type            = "NS"
+#   ttl             = 3600
+#   records         = local.clojars_org_apex_ns
+#   allow_overwrite = true
+# }
+
+# === Registrar (Route 53 Domains) ===
+#
+# Planned migration: transfer the domain registrations from the current
+# registrar to Route 53 Domains. After the transfer, `aws_route53domains_registered_domain`
+# adopts the existing registration so we can manage the delegation NS list and
+# contact info from Terraform.
+#
+# Commented out until the transfer completes. After transfer:
+#   1. `terraform import aws_route53domains_registered_domain.clojars_net clojars.net`
+#   2. uncomment, run `terraform plan` to inspect contact / privacy / lock drift
+#      (the resource adopts whatever's currently set; null fields here mean
+#      "leave as-is" but explicit contact blocks may be needed to avoid diffs)
+#   3. apply.
+#
+# resource "aws_route53domains_registered_domain" "clojars_net" {
+#   domain_name = local.clojars_net_zone
+#
+#   dynamic "name_server" {
+#     for_each = concat(local.dnsimple_apex_ns, aws_route53_zone.clojars_net.name_servers)
+#     content {
+#       name = name_server.value
+#     }
+#   }
+# }
+#
+# resource "aws_route53domains_registered_domain" "clojars_org" {
+#   domain_name = local.clojars_zone
+#
+#   dynamic "name_server" {
+#     for_each = concat(local.dnsimple_apex_ns, aws_route53_zone.clojars_org.name_servers)
+#     content {
+#       name = name_server.value
+#     }
+#   }
+# }
+
 locals {
   zones = {
     org = {
