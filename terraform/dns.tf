@@ -151,8 +151,9 @@ resource "dnsimple_zone_record" "repo" {
   zone_name = local.clojars_zone
   name      = "repo"
   type      = "CNAME"
-  value     = "v.ssl.global.fastly.net"
-  ttl       = 3600
+  # https://www.fastly.com/documentation/guides/full-site-delivery/domains-and-origins/enabling-dualstack-connections/
+  value = "dualstack.v.ssl.global.fastly.net"
+  ttl   = 60
 }
 
 resource "dnsimple_zone_record" "status" {
