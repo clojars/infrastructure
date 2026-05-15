@@ -46,7 +46,7 @@ locals {
     "ns3.dnsimple.com",
   ]
 
-  # only 6 are allowed in aws_route53domains_registered_domain, so we take three from the 4 provided by route53
+  # only six are allowed in aws_route53domains_registered_domain, so we take three from the four provided by route53
   clojars_net_apex_ns = concat(
     local.dnsimple_apex_ns,
     slice(aws_route53_zone.clojars_net.name_servers, 0, 3),

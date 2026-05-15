@@ -91,14 +91,14 @@ resource "aws_s3_bucket_cors_configuration" "production_repo_bucket" {
 resource "aws_iam_role" "repo_backup" {
   name = "repo-backup-role"
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [{
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "backup.amazonaws.com"
+    "Version" : "2012-10-17",
+    "Statement" : [{
+      "Action" : "sts:AssumeRole",
+      "Principal" : {
+        "Service" : "backup.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect" : "Allow",
+      "Sid" : ""
     }]
   })
 }
