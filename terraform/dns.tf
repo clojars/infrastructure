@@ -167,16 +167,6 @@ module "apex_txt" {
   ]
 }
 
-# DNSimple auto-exposes the ALIAS target via a TXT record at the apex. Route 53
-# has no equivalent need, so this stays DNSimple-only.
-resource "dnsimple_zone_record" "txt_alias_marker" {
-  zone_name = local.clojars_zone
-  name      = ""
-  type      = "TXT"
-  value     = "\"ALIAS for ${aws_lb.production.dns_name}\""
-  ttl       = 60
-}
-
 # === clojars.org TXT subdomain records ===
 
 module "dmarc" {
@@ -401,15 +391,6 @@ module "net_caa" {
   type    = "CAA"
   ttl     = 60
   records = ["0 issue \"amazontrust.com\""]
-}
-
-# DNSimple-only marker, see notes on txt_alias_marker above.
-resource "dnsimple_zone_record" "net_txt_alias_marker" {
-  zone_name = local.clojars_net_zone
-  name      = ""
-  type      = "TXT"
-  value     = "\"ALIAS for ${local.clojars_zone}\""
-  ttl       = 3600
 }
 
 module "net_acm_validation_apex" {
