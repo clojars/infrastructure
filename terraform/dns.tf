@@ -44,12 +44,16 @@ locals {
     "ns1.dnsimple.com",
     "ns2.dnsimple.com",
     "ns3.dnsimple.com",
-    "ns4.dnsimple.com",
   ]
 
+  # only 6 are allowed in aws_route53domains_registered_domain, so we take three from the 4 provided by route53
   clojars_net_apex_ns = concat(
     local.dnsimple_apex_ns,
-    aws_route53_zone.clojars_net.name_servers,
+    slice(aws_route53_zone.clojars_net.name_servers, 0, 3),
+  )
+  clojars_org_apex_ns = concat(
+    local.dnsimple_apex_ns,
+    slice(aws_route53_zone.clojars_org.name_servers, 0, 3),
   )
 }
 
@@ -62,24 +66,14 @@ resource "aws_route53_record" "net_apex_ns" {
   allow_overwrite = true
 }
 
-# clojars.org — ready but not applied yet. Uncomment after clojars.net is
-# verified healthy.
-#
-# locals {
-#   clojars_org_apex_ns = concat(
-#     local.dnsimple_apex_ns,
-#     aws_route53_zone.clojars_org.name_servers,
-#   )
-# }
-#
-# resource "aws_route53_record" "org_apex_ns" {
-#   zone_id         = aws_route53_zone.clojars_org.zone_id
-#   name            = local.clojars_zone
-#   type            = "NS"
-#   ttl             = 3600
-#   records         = local.clojars_org_apex_ns
-#   allow_overwrite = true
-# }
+resource "aws_route53_record" "org_apex_ns" {
+  zone_id         = aws_route53_zone.clojars_org.zone_id
+  name            = local.clojars_zone
+  type            = "NS"
+  ttl             = 3600
+  records         = local.clojars_org_apex_ns
+  allow_overwrite = true
+}
 
 # === Registrar (Route 53 Domains) ===
 #
@@ -95,22 +89,23 @@ resource "aws_route53_record" "net_apex_ns" {
 #      "leave as-is" but explicit contact blocks may be needed to avoid diffs)
 #   3. apply.
 #
-# resource "aws_route53domains_registered_domain" "clojars_net" {
-#   domain_name = local.clojars_net_zone
-#
-#   dynamic "name_server" {
-#     for_each = concat(local.dnsimple_apex_ns, aws_route53_zone.clojars_net.name_servers)
-#     content {
-#       name = name_server.value
-#     }
-#   }
-# }
-#
+resource "aws_route53domains_registered_domain" "clojars_net" {
+  domain_name = local.clojars_net_zone
+
+  dynamic "name_server" {
+
+    for_each = local.clojars_net_apex_ns
+    content {
+      name = name_server.value
+    }
+  }
+}
+
 # resource "aws_route53domains_registered_domain" "clojars_org" {
 #   domain_name = local.clojars_zone
 #
 #   dynamic "name_server" {
-#     for_each = concat(local.dnsimple_apex_ns, aws_route53_zone.clojars_org.name_servers)
+#     for_each = local.clojars_org_apex_ns
 #     content {
 #       name = name_server.value
 #     }

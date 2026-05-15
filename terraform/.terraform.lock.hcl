@@ -5,6 +5,7 @@ provider "registry.terraform.io/dnsimple/dnsimple" {
   version     = "1.10.0"
   constraints = "~> 1.7"
   hashes = [
+    "h1:Hhbv3mnLhgY9NuvjzUqDo0PQKNTfStULx+m+S3wHKQg=",
     "h1:UOCA/dFp2ORSVi/WlCCZrjjfXPUy9vpgk4PEBv6h4w0=",
     "zh:025dbad287c9a9ca61b84fc4a14d3f595dbbc1139d5cf034597922264b756f6f",
     "zh:0c2fa8513004732f3aae6a408eb68ff9c2ad119f8bcefe491f0420ad0f4fe7d5",
