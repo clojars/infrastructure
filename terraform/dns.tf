@@ -30,7 +30,7 @@ output "route53_clojars_net_nameservers" {
 # Multi-provider DNS: the in-zone NS RRset on each authoritative server should
 # match the registrar's delegation, otherwise resolvers that cache the in-zone
 # answer (per RFC 2181 §5.4.1) only learn one provider's servers and the
-# redundancy is defeated. Registrar delegation is 4 DNSimple + 4 Route 53.
+# redundancy is defeated. Registrar delegation is 3 DNSimple + 3 Route 53.
 #
 # We can only set the Route 53 side from Terraform today. DNSimple has an API
 # and UI for editing the zone-side NS RRset
@@ -76,19 +76,7 @@ resource "aws_route53_record" "org_apex_ns" {
 }
 
 # === Registrar (Route 53 Domains) ===
-#
-# Planned migration: transfer the domain registrations from the current
-# registrar to Route 53 Domains. After the transfer, `aws_route53domains_registered_domain`
-# adopts the existing registration so we can manage the delegation NS list and
-# contact info from Terraform.
-#
-# Commented out until the transfer completes. After transfer:
-#   1. `terraform import aws_route53domains_registered_domain.clojars_net clojars.net`
-#   2. uncomment, run `terraform plan` to inspect contact / privacy / lock drift
-#      (the resource adopts whatever's currently set; null fields here mean
-#      "leave as-is" but explicit contact blocks may be needed to avoid diffs)
-#   3. apply.
-#
+
 resource "aws_route53domains_registered_domain" "clojars_net" {
   domain_name = local.clojars_net_zone
 
@@ -101,16 +89,16 @@ resource "aws_route53domains_registered_domain" "clojars_net" {
   }
 }
 
-# resource "aws_route53domains_registered_domain" "clojars_org" {
-#   domain_name = local.clojars_zone
-#
-#   dynamic "name_server" {
-#     for_each = local.clojars_org_apex_ns
-#     content {
-#       name = name_server.value
-#     }
-#   }
-# }
+resource "aws_route53domains_registered_domain" "clojars_org" {
+  domain_name = local.clojars_zone
+
+  dynamic "name_server" {
+    for_each = local.clojars_org_apex_ns
+    content {
+      name = name_server.value
+    }
+  }
+}
 
 locals {
   zones = {
