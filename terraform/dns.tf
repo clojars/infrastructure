@@ -386,7 +386,7 @@ module "net_apex_alias" {
   zone        = local.zones.net
   name        = ""
   type        = "ALIAS"
-  ttl         = 3600
+  ttl         = 60
   alias_value = local.clojars_zone
   route53_alias = {
     name    = aws_lb.production.dns_name
