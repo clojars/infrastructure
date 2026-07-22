@@ -20,7 +20,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "fastly_logs_bucket" {
     }
 
     noncurrent_version_expiration {
-      noncurrent_days = "14"
+      noncurrent_days = "120"
     }
     status = "Enabled"
 
