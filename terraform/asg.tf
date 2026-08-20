@@ -63,12 +63,10 @@ resource "aws_launch_template" "prod_launch_template" {
   }
 
   metadata_options {
-    # cognitect's aws.api only supports IMDSv1 for getting instance credentials,
-    # but IMDSv1 is disabled by default on AL2023 in favor for IMDSv2. This allows
-    # IMDSv1 to be used.
-    http_tokens = "optional"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
 
-    # A TF bug requires us to set this as well for the above option to be
+    # A TF bug requires us to set this as well for the token option to be
     # applied. See
     # https://github.com/hashicorp/terraform-provider-aws/issues/25909#issuecomment-1218625304
     http_endpoint = "enabled"
