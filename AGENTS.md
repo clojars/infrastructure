@@ -23,8 +23,8 @@ used to cut and deploy releases.
 ## Layout
 
 - `terraform/` — AWS resources (ASG, LB, RDS, S3, SQS, IAM, VPC, CloudWatch)
-  and DNSimple records. State lives in S3 (`clojars-tf-state`) with a
-  DynamoDB lock table (`terraform-state-lock`). Region: `us-east-2`.
+  and DNSimple records. State lives in S3 (`clojars-tf-state`) with S3-native
+  locking (`use_lockfile`). Region: `us-east-2`.
 - `ami/` — Packer config (`packer.json.pkr.hcl`) for building the Clojars AMI.
 - `aws-ansible/` — Ansible roles/playbooks applied during AMI build.
 - `scripts/` — Release, deploy, and instance-management helpers.

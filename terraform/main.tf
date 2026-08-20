@@ -8,11 +8,11 @@ provider "dnsimple" {
 
 terraform {
   backend "s3" {
-    bucket         = "clojars-tf-state"
-    region         = "us-east-2"
-    key            = "clojars-prod/terraform.tfstate"
-    dynamodb_table = "terraform-state-lock"
-    encrypt        = true
+    bucket       = "clojars-tf-state"
+    region       = "us-east-2"
+    key          = "clojars-prod/terraform.tfstate"
+    encrypt      = true
+    use_lockfile = true
   }
 }
 
@@ -35,14 +35,3 @@ resource "aws_s3_bucket_versioning" "tf_state" {
   }
 }
 
-resource "aws_dynamodb_table" "tf_state_lock" {
-  name           = "terraform-state-lock"
-  hash_key       = "LockID"
-  read_capacity  = 2
-  write_capacity = 2
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-}

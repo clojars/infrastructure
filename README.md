@@ -72,9 +72,10 @@ and install the correct version (cached in `bin/.cache/`).
 
 ### Initialization
 
-The terraform state is stored in S3 and uses a DynamoDB table to lock that state
-when it is being altered. On first run, you will need to initialize terraform
-with (this assumes you have set up `direnv` as above to use `bin/terraform`):
+The terraform state is stored in S3, with S3-native locking (`use_lockfile`)
+to prevent concurrent state mutations. On first run, you will need to
+initialize terraform with (this assumes you have set up `direnv` as above to
+use `bin/terraform`):
 
 ```sh
 cd terraform
