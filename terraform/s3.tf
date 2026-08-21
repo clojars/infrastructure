@@ -16,11 +16,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "fastly_logs_bucket" {
     id = "delete-old-logs"
 
     expiration {
-      days = "14"
+      days = "120"
     }
 
     noncurrent_version_expiration {
-      noncurrent_days = "120"
+      noncurrent_days = "14"
     }
     status = "Enabled"
 
