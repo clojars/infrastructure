@@ -6,16 +6,52 @@ locals {
     "subnet-d27c58a8", # us-east-2b
     "subnet-5cbf3310"  # us-east-2c
   ]
+
+  # Keep database subnets at the top of the default VPC's CIDR range so they
+  # don't overlap its /20 default subnets.
+  database_subnets = {
+    "us-east-2a" = 240
+    "us-east-2b" = 241
+  }
 }
 
 resource "aws_vpc" "default" {
   assign_generated_ipv6_cidr_block = true
 }
 
+resource "aws_subnet" "database" {
+  for_each = local.database_subnets
+
+  availability_zone       = each.key
+  cidr_block              = cidrsubnet(aws_vpc.default.cidr_block, 8, each.value)
+  map_public_ip_on_launch = false
+  vpc_id                  = aws_vpc.default.id
+
+  tags = {
+    Name = "database-${each.key}"
+  }
+}
+
+# This route table deliberately has no route to an internet or NAT gateway.
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "database-private"
+  }
+}
+
+resource "aws_route_table_association" "database" {
+  for_each = aws_subnet.database
+
+  route_table_id = aws_route_table.database.id
+  subnet_id      = each.value.id
+}
+
 resource "aws_default_network_acl" "default" {
   default_network_acl_id = aws_vpc.default.default_network_acl_id
 
-  subnet_ids = local.subnet_ids
+  subnet_ids = concat(local.subnet_ids, values(aws_subnet.database)[*].id)
 
   // We see lots of connection attempts from this IP, and the TLS negotiation
   // almost always fails. This is expensive (it quadrupled our LB expenditure),
