@@ -10,7 +10,7 @@ instances=$(aws ec2 describe-instances --region us-east-2 \
 instance_count=$(echo "$instances" | grep -c .)
 
 if [ "$instance_count" -eq 0 ]; then
-    echo "No running instances found."
+    echo "No running instances found." >&2
     exit 1
 elif [ "$instance_count" -eq 1 ]; then
     # Single instance - connect directly
@@ -18,22 +18,22 @@ elif [ "$instance_count" -eq 1 ]; then
     echo "$instance_ip"
 else
     # Multiple instances - let user choose
-    echo "Multiple running instances found:"
-    echo
+    echo "Multiple running instances found:" >&2
+    echo >&2
     
     # Display instances with numbers
     i=1
     while IFS=$'\t' read -r instance_id public_ip launch_time; do
-        echo "[$i] Instance: $instance_id, IP: $public_ip, Started: $launch_time"
+        echo "[$i] Instance: $instance_id, IP: $public_ip, Started: $launch_time" >&2
         ((i++))
     done <<< "$instances"
+    echo >&2
     
-    echo
     read -r -p "Select instance number (1-$instance_count): " selection
     
     # Validate selection
     if [[ ! "$selection" =~ ^[0-9]+$ ]] || [ "$selection" -lt 1 ] || [ "$selection" -gt "$instance_count" ]; then
-        echo "Invalid selection."
+        echo "Invalid selection." >&2
         exit 1
     fi
     
