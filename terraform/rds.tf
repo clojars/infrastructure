@@ -9,6 +9,7 @@ data "aws_ssm_parameter" "db_username" {
 resource "aws_security_group" "allow_postgres" {
   name        = "allow_postgres2"
   description = "Allow access to postgres server"
+  vpc_id      = aws_vpc.default.id
 
   ingress {
     from_port       = 5432
@@ -25,16 +26,24 @@ resource "aws_security_group" "allow_postgres" {
   }
 }
 
+resource "aws_db_subnet_group" "production" {
+  name        = "clojars-production"
+  description = "Private subnets for the production database"
+  subnet_ids  = values(aws_subnet.database)[*].id
+}
+
 resource "aws_db_instance" "production" {
   allocated_storage            = 20
   backup_retention_period      = 7
+  db_subnet_group_name         = aws_db_subnet_group.production.name
+  deletion_protection          = true
   engine                       = "postgres"
   engine_version               = "18.4"
   identifier                   = "clojars-production2"
   instance_class               = "db.t4g.small"
   db_name                      = "clojars"
   password                     = data.aws_ssm_parameter.db_password.value
-  publicly_accessible          = true
+  publicly_accessible          = false
   performance_insights_enabled = true
   storage_type                 = "gp2"
   username                     = data.aws_ssm_parameter.db_username.value
