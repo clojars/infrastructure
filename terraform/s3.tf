@@ -88,6 +88,24 @@ resource "aws_s3_bucket_cors_configuration" "production_repo_bucket" {
   }
 }
 
+resource "aws_s3_object" "production_repository_metadata" {
+  bucket       = aws_s3_bucket.production_repo_bucket.id
+  key          = ".meta/repository-metadata.xml"
+  acl          = "public-read"
+  content_type = "application/xml"
+  content      = <<-EOT
+    <?xml version="1.0" encoding="UTF-8"?>
+    <repository-metadata>
+      <version>1.0.0</version>
+      <url>https://repo.clojars.org</url>
+      <id>clojars</id>
+      <name>Clojars</name>
+      <layout>maven2</layout>
+      <policy>release</policy>
+    </repository-metadata>
+  EOT
+}
+
 resource "aws_iam_role" "repo_backup" {
   name = "repo-backup-role"
   assume_role_policy = jsonencode({
