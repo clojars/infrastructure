@@ -34,6 +34,11 @@ used to cut and deploy releases.
 
 ## Working in this repo
 
+- Read-only AWS queries and SSH inspection commands are allowed for requested
+  investigations, using existing credentials and SSH keys. This includes
+  instance discovery, OS/kernel/package version checks, and DNF update checks.
+  DNF checks may refresh metadata caches, but must not install or upgrade
+  packages. Do not reboot, restart services, deploy, or mutate infrastructure.
 - Read `README.md` for the deploy/AMI flow before suggesting changes there.
 - Terraform changes: edit the `.tf` file, run `terraform fmt` and
   `terraform validate` in `terraform/`, and optionally `terraform plan` to
@@ -45,7 +50,7 @@ used to cut and deploy releases.
 ## Local context
 
 - Env vars (`AWS_*`, `DNSIMPLE_*`, `CLOJARS_SSH_KEY_FILE`, `TF_VAR_*`) are
-  loaded via `direnv` from `.envrc`. Assume they're already set in the shell;
-  don't try to set or echo them.
+  loaded via `direnv` from `.envrc`. Use the existing shell environment, or
+  `direnv exec . <command>` if needed; don't manually set or echo them.
 - The `bin/` wrappers require `direnv` (or a manual `PATH` addition) to be
   picked up ahead of system binaries.
